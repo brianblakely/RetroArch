@@ -70,7 +70,7 @@
 static int menu_action_sublabel_file_browser_core(file_list_t *list, unsigned type, unsigned i, const char *label, const char *path, char *s, size_t len)
 {
    core_info_t *core_info = NULL;
-   size_t _len = 
+   size_t _len =
       strlcpy(s,
             msg_hash_to_str(MENU_ENUM_LABEL_VALUE_CORE_INFO_LICENSES), len);
    s[  _len]   = ':';
@@ -78,7 +78,7 @@ static int menu_action_sublabel_file_browser_core(file_list_t *list, unsigned ty
    s[++_len]   = '\0';
 
    /* Search for specified core */
-   if (  
+   if (
          core_info_find(path, &core_info)
       && core_info->licenses_list)
    {
@@ -965,6 +965,7 @@ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_netplay_refresh_rooms,              
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_netplay_refresh_lan,                   MENU_ENUM_SUBLABEL_NETPLAY_REFRESH_LAN)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_rename_entry,                          MENU_ENUM_SUBLABEL_RENAME_ENTRY)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_delete_entry,                          MENU_ENUM_SUBLABEL_DELETE_ENTRY)
+DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_set_patch,                             MENU_ENUM_SUBLABEL_SET_PATCH)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_information,                           MENU_ENUM_SUBLABEL_INFORMATION)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_run,                                   MENU_ENUM_SUBLABEL_RUN)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_add_to_favorites,                      MENU_ENUM_SUBLABEL_ADD_TO_FAVORITES)
@@ -1405,11 +1406,11 @@ static int action_bind_sublabel_systeminfo_controller_entry(
 
    snprintf(tmp, sizeof(tmp),
          msg_hash_to_str(MENU_ENUM_LABEL_VALUE_PORT_DEVICE_INFO),
-           input_config_get_device_display_name(controller) 
-         ? input_config_get_device_display_name(controller) 
+           input_config_get_device_display_name(controller)
+         ? input_config_get_device_display_name(controller)
          : msg_hash_to_str(MENU_ENUM_LABEL_VALUE_NOT_AVAILABLE),
-           input_config_get_device_display_name(controller) 
-         ? input_config_get_device_config_name(controller) 
+           input_config_get_device_display_name(controller)
+         ? input_config_get_device_config_name(controller)
          : msg_hash_to_str(MENU_ENUM_LABEL_VALUE_NOT_AVAILABLE),
            input_config_get_device_vid(controller),
            input_config_get_device_pid(controller));
@@ -1443,7 +1444,7 @@ static int action_bind_sublabel_cpu_policy_entry_list(
    {
       int idx     = atoi(path);
       size_t _len = strlcpy(s, drivers[idx]->scaling_governor, len);
-      snprintf(s + _len, len - _len, " | Freq: %u MHz\n", 
+      snprintf(s + _len, len - _len, " | Freq: %u MHz\n",
             drivers[idx]->current_frequency / 1000);
       return 0;
    }
@@ -1661,7 +1662,7 @@ static int action_bind_sublabel_input_remap_port(
 
    MENU_ENTRY_INITIALIZE(entry);
 
-   entry.flags |= MENU_ENTRY_FLAG_LABEL_ENABLED; 
+   entry.flags |= MENU_ENTRY_FLAG_LABEL_ENABLED;
 
    menu_entry_get(&entry, 0, i, NULL, false);
 
@@ -1730,7 +1731,7 @@ static int action_bind_sublabel_netplay_room(file_list_t *list,
       ": %s (%s)\n"
       "%s: %s (%s)\n"
       "%s: %s ",
-      !string_is_empty(room->retroarch_version) 
+      !string_is_empty(room->retroarch_version)
       ? room->retroarch_version
       : msg_hash_to_str(MENU_ENUM_LABEL_VALUE_NOT_AVAILABLE),
       (!string_is_empty(room->frontend) &&
@@ -1963,8 +1964,8 @@ static int action_bind_sublabel_playlist_entry(
    if (   !string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_LOAD_CONTENT_HISTORY))
        && !string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_HISTORY_TAB))
        && !string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_DEFERRED_FAVORITES_LIST))
-       && !string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_FAVORITES_TAB)) 
-       && !string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_DEFERRED_PLAYLIST_LIST)) 
+       && !string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_FAVORITES_TAB))
+       && !string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_DEFERRED_PLAYLIST_LIST))
        && !string_is_equal(label, msg_hash_to_str(MENU_ENUM_LABEL_HORIZONTAL_MENU)))
       return 0;
 
@@ -2065,7 +2066,7 @@ static int action_bind_sublabel_core_updater_entry(
 {
    core_updater_list_t *core_list         = core_updater_list_get_cached();
    const core_updater_list_entry_t *entry = NULL;
-   size_t _len = 
+   size_t _len =
       strlcpy(s,
             msg_hash_to_str(MENU_ENUM_LABEL_VALUE_CORE_INFO_LICENSES), len);
    s[  _len]   = ':';
@@ -3485,6 +3486,9 @@ int menu_cbs_init_bind_sublabel(menu_file_list_cbs_t *cbs,
             break;
          case MENU_ENUM_LABEL_RUN:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_run);
+            break;
+         case MENU_ENUM_LABEL_SET_PATCH:
+            BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_set_patch);
             break;
          case MENU_ENUM_LABEL_INFORMATION:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_information);
@@ -5624,7 +5628,7 @@ int menu_cbs_init_bind_sublabel(menu_file_list_cbs_t *cbs,
    }
    else
    {
-      /* Per-port entries require string match against label. 
+      /* Per-port entries require string match against label.
        * Some cases may be detected above by "type", but not all. */
       typedef struct info_single_list
       {
@@ -5672,7 +5676,7 @@ int menu_cbs_init_bind_sublabel(menu_file_list_cbs_t *cbs,
          {
             MENU_ENUM_LABEL_INPUT_BIND_DEFAULTS_INDEX,
             action_bind_sublabel_input_bind_defaults
-         },         
+         },
       };
 
       const char* idx_placeholder = "%u";
@@ -5680,13 +5684,13 @@ int menu_cbs_init_bind_sublabel(menu_file_list_cbs_t *cbs,
       {
          int idxpos = -1;
          idxpos = string_find_index_substring_string(msg_hash_to_str(info_list[i].label_idx), idx_placeholder);
-         if ( idxpos > 0 && 
-              string_starts_with_size(label, msg_hash_to_str(info_list[i].label_idx), idxpos) && 
-              (( (size_t) idxpos == strlen(msg_hash_to_str(info_list[i].label_idx)) - 2) || 
-               ( (size_t) idxpos <  strlen(msg_hash_to_str(info_list[i].label_idx)) - 2  && 
-                          string_ends_with_size(label, 
+         if ( idxpos > 0 &&
+              string_starts_with_size(label, msg_hash_to_str(info_list[i].label_idx), idxpos) &&
+              (( (size_t) idxpos == strlen(msg_hash_to_str(info_list[i].label_idx)) - 2) ||
+               ( (size_t) idxpos <  strlen(msg_hash_to_str(info_list[i].label_idx)) - 2  &&
+                          string_ends_with_size(label,
                                           msg_hash_to_str(info_list[i].label_idx)+idxpos+2,
-                                          lbl_len, 
+                                          lbl_len,
                                           strlen(msg_hash_to_str(info_list[i].label_idx))-idxpos-2))))
          {
             BIND_ACTION_SUBLABEL(cbs, info_list[i].cb);

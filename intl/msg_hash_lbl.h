@@ -1812,6 +1812,10 @@ MSG_HASH(
    "images_tab"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_SET_PATCH,
+   "set_patch"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_INFORMATION,
    "information"
    )

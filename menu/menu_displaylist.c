@@ -778,7 +778,7 @@ static int menu_displaylist_parse_core_info(
          if (systemfiles_in_content_dir)
          {
             strlcpy(tmp,
-                  msg_hash_to_str(MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_IN_CONTENT_DIRECTORY), 
+                  msg_hash_to_str(MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_IN_CONTENT_DIRECTORY),
                   sizeof(tmp));
             if (menu_entries_append(list, tmp, "",
                   MENU_ENUM_LABEL_CORE_INFO_ENTRY, MENU_SETTINGS_CORE_INFO_NONE, 0, 0, NULL))
@@ -787,7 +787,7 @@ static int menu_displaylist_parse_core_info(
 
          /* Show the path that was checked */
          snprintf(tmp, sizeof(tmp),
-               msg_hash_to_str(MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_PATH), 
+               msg_hash_to_str(MENU_ENUM_LABEL_VALUE_CORE_INFO_FIRMWARE_PATH),
                firmware_info.directory.system);
          if (menu_entries_append(list, tmp, "",
                MENU_ENUM_LABEL_CORE_INFO_ENTRY, MENU_SETTINGS_CORE_INFO_NONE, 0, 0, NULL))
@@ -4020,6 +4020,11 @@ static int menu_displaylist_parse_horizontal_content_actions(
 #endif
       }
 
+      menu_entries_append(list,
+            msg_hash_to_str(MENU_ENUM_LABEL_VALUE_SET_PATCH),
+            msg_hash_to_str(MENU_ENUM_LABEL_SET_PATCH),
+            MENU_ENUM_LABEL_SET_PATCH, MENU_SETTING_ACTION, 0, 0, NULL);
+
       if (settings->bools.quick_menu_show_information)
          menu_entries_append(list,
                msg_hash_to_str(MENU_ENUM_LABEL_VALUE_INFORMATION),
@@ -6016,13 +6021,13 @@ void menu_displaylist_info_init(menu_displaylist_info_t *info)
    info->setting                  = NULL;
 }
 
-typedef struct menu_displaylist_build_info 
+typedef struct menu_displaylist_build_info
 {
    enum msg_hash_enums enum_idx;
    enum menu_displaylist_parse_type parse_type;
 } menu_displaylist_build_info_t;
 
-typedef struct menu_displaylist_build_info_selective 
+typedef struct menu_displaylist_build_info_selective
 {
    enum msg_hash_enums enum_idx;
    enum menu_displaylist_parse_type parse_type;
@@ -6763,7 +6768,7 @@ unsigned menu_displaylist_build_list(
             bool playlist_show_sublabels = settings->bools.playlist_show_sublabels;
             bool history_list_enable     = settings->bools.history_list_enable;
             bool truncate_playlist       = settings->bools.ozone_truncate_playlist_name;
-            menu_displaylist_build_info_selective_t build_list[] = 
+            menu_displaylist_build_info_selective_t build_list[] =
             {
                {MENU_ENUM_LABEL_HISTORY_LIST_ENABLE,                 PARSE_ONLY_BOOL, true},
                {MENU_ENUM_LABEL_CONTENT_HISTORY_SIZE,                PARSE_ONLY_UINT, false},
@@ -12531,6 +12536,30 @@ bool menu_displaylist_ctl(enum menu_displaylist_ctl_state type,
             menu_entries_clear(info->list);
             info->flags |= MD_FLAG_NEED_PUSH;
             /* TODO/FIXME ? */
+            break;
+         case DISPLAYLIST_PATCH_LIST:
+            menu_entries_clear(info->list);
+            count=0;
+            menu_entries_append(info->list,
+                  "No Patch",
+                  "foo",
+                  0,
+                  FILE_TYPE_NONE, 0, 0, NULL);
+            count++;
+            menu_entries_append(info->list,
+                  "My Custom Adventure",
+                  "bar",
+                  0,
+                  FILE_TYPE_NONE, 0, 0, NULL);
+            count++;
+            menu_entries_append(info->list,
+                  "Egyptian Reskin",
+                  "baz",
+                  0,
+                  FILE_TYPE_NONE, 0, 0, NULL);
+
+            info->flags       |= MD_FLAG_NEED_REFRESH
+                               | MD_FLAG_NEED_PUSH;
             break;
          case DISPLAYLIST_INFORMATION:
             menu_entries_clear(info->list);

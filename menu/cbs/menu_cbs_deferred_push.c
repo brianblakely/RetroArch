@@ -116,6 +116,7 @@ GENERIC_DEFERRED_PUSH(deferred_push_eject_disc,                     DISPLAYLIST_
 #endif
 GENERIC_DEFERRED_PUSH(deferred_push_cdrom_info_detail_list,         DISPLAYLIST_CDROM_DETAIL_INFO)
 GENERIC_DEFERRED_PUSH(deferred_push_load_disk_list,                 DISPLAYLIST_LOAD_DISC)
+GENERIC_DEFERRED_PUSH(deferred_push_patch_list,                     DISPLAYLIST_PATCH_LIST)
 GENERIC_DEFERRED_PUSH(deferred_push_information_list,               DISPLAYLIST_INFORMATION_LIST)
 GENERIC_DEFERRED_PUSH(deferred_push_information,                    DISPLAYLIST_INFORMATION)
 GENERIC_DEFERRED_PUSH(deferred_archive_action_detect_core,          DISPLAYLIST_ARCHIVE_ACTION_DETECT_CORE)
@@ -358,6 +359,8 @@ static int deferred_push_cursor_manager_list_generic(
    char *elem1                   = NULL;
    char *path_cpy                = NULL;
    const char *path              = info->path;
+   struct string_list str_list   = {0};
+   settings_t *settings          = config_get_ptr();
 
    if (!path)
       return -1;
@@ -512,6 +515,9 @@ static int general_push(menu_displaylist_info_t *info,
       case PUSH_ARCHIVE_OPEN_DETECT_CORE:
       case PUSH_DETECT_CORE_LIST:
          {
+            union string_list_elem_attr attr;
+            char newstring[PATH_MAX_LENGTH];
+            struct string_list str_list2      = {0};
             struct retro_system_info *sysinfo =
                &runloop_state_get_ptr()->system.info;
             bool filter_by_current_core       = settings->bools.filter_by_current_core;
@@ -529,13 +535,14 @@ static int general_push(menu_displaylist_info_t *info,
                core_info_get_list(&list);
                if (list && !string_is_empty(list->all_ext))
                {
-                  char *tok, *save;
-                  char *all_ext_cpy    = strdup(list->all_ext);
+                  unsigned x;
+                  struct string_list str_list  = {0};
+                  string_list_initialize(&str_list);
 
-                  /* If the current core already supports
-                   * this extension, skip adding it */
-                  for ( tok = strtok_r(all_ext_cpy, "|", &save); tok;
-                        tok = strtok_r(NULL, "|", &save))
+                  string_split_noalloc(&str_list,
+                        list->all_ext, "|");
+
+                  for (x = 0; x < str_list.size; x++)
                   {
                      bool exists = false;
 
@@ -852,6 +859,7 @@ static int menu_cbs_init_bind_deferred_push_compare_label(
       {MENU_ENUM_LABEL_NETWORK_INFORMATION, deferred_push_network_information},
       {MENU_ENUM_LABEL_ONLINE_UPDATER, deferred_push_options},
       {MENU_ENUM_LABEL_HELP_LIST, deferred_push_help},
+      {MENU_ENUM_LABEL_SET_PATCH, deferred_push_patch_list},
       {MENU_ENUM_LABEL_INFORMATION_LIST, deferred_push_information_list},
       {MENU_ENUM_LABEL_INFORMATION, deferred_push_information},
       {MENU_ENUM_LABEL_SHADER_OPTIONS, deferred_push_shader_options},
@@ -1121,6 +1129,9 @@ static int menu_cbs_init_bind_deferred_push_compare_label(
             break;
          case MENU_ENUM_LABEL_LOAD_CONTENT_SPECIAL:
             BIND_ACTION_DEFERRED_PUSH(cbs, deferred_push_load_content_special);
+            break;
+         case MENU_ENUM_LABEL_SET_PATCH:
+            BIND_ACTION_DEFERRED_PUSH(cbs, deferred_push_patch_list);
             break;
          case MENU_ENUM_LABEL_INFORMATION_LIST:
             BIND_ACTION_DEFERRED_PUSH(cbs, deferred_push_information_list);

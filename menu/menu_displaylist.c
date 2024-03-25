@@ -4097,6 +4097,11 @@ static int menu_displaylist_parse_horizontal_content_actions(
 #endif
       }
 
+      menu_entries_append(list,
+            msg_hash_to_str(MENU_ENUM_LABEL_VALUE_SET_PATCH),
+            msg_hash_to_str(MENU_ENUM_LABEL_SET_PATCH),
+            MENU_ENUM_LABEL_SET_PATCH, MENU_SETTING_ACTION, 0, 0, NULL);
+
       if (settings->bools.quick_menu_show_information)
          menu_entries_append(list,
                msg_hash_to_str(MENU_ENUM_LABEL_VALUE_INFORMATION),
@@ -11741,12 +11746,12 @@ static unsigned menu_displaylist_build_shader_parameter(
                val_d,
                MENU_ENUM_LABEL_NO_ITEMS,
                setting_type,
-               i, entry_type, NULL);   
+               i, entry_type, NULL);
       count = 1;
       checked = 1.0;
       checked_found = true;
-   } 
-   else 
+   }
+   else
    {
       for (i = 0; current_value < (max + 0.0001f); i++)
       {
@@ -12856,6 +12861,30 @@ bool menu_displaylist_ctl(enum menu_displaylist_ctl_state type,
             menu_entries_clear(info->list);
             info->flags |= MD_FLAG_NEED_PUSH;
             /* TODO/FIXME ? */
+            break;
+         case DISPLAYLIST_PATCH_LIST:
+            menu_entries_clear(info->list);
+            count=0;
+            menu_entries_append(info->list,
+                  "No Patch",
+                  "foo",
+                  0,
+                  FILE_TYPE_NONE, 0, 0, NULL);
+            count++;
+            menu_entries_append(info->list,
+                  "My Custom Adventure",
+                  "bar",
+                  0,
+                  FILE_TYPE_NONE, 0, 0, NULL);
+            count++;
+            menu_entries_append(info->list,
+                  "Egyptian Reskin",
+                  "baz",
+                  0,
+                  FILE_TYPE_NONE, 0, 0, NULL);
+
+            info->flags       |= MD_FLAG_NEED_REFRESH
+                               | MD_FLAG_NEED_PUSH;
             break;
          case DISPLAYLIST_INFORMATION:
             menu_entries_clear(info->list);

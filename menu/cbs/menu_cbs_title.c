@@ -722,6 +722,7 @@ DEFAULT_TITLE_MACRO(action_get_system_information_list,         MENU_ENUM_LABEL_
 DEFAULT_TITLE_MACRO(action_get_disc_information_list,           MENU_ENUM_LABEL_VALUE_DISC_INFORMATION)
 DEFAULT_TITLE_MACRO(action_get_network_information_list,        MENU_ENUM_LABEL_VALUE_NETWORK_INFORMATION)
 DEFAULT_TITLE_MACRO(action_get_settings_list,                   MENU_ENUM_LABEL_VALUE_SETTINGS)
+DEFAULT_TITLE_MACRO(action_get_title_set_patch,                 MENU_ENUM_LABEL_VALUE_SET_PATCH)
 DEFAULT_TITLE_MACRO(action_get_title_information_list,          MENU_ENUM_LABEL_VALUE_INFORMATION_LIST)
 DEFAULT_TITLE_MACRO(action_get_title_information,               MENU_ENUM_LABEL_VALUE_INFORMATION)
 DEFAULT_TITLE_MACRO(action_get_title_collection,                MENU_ENUM_LABEL_VALUE_PLAYLISTS_TAB)
@@ -1186,6 +1187,8 @@ static int menu_cbs_init_bind_title_compare_label(menu_file_list_cbs_t *cbs,
          action_get_load_content_list},
       {MENU_ENUM_LABEL_NETPLAY,
          action_get_netplay_list},
+      {MENU_ENUM_LABEL_SET_PATCH,
+         action_get_title_set_patch},
       {MENU_ENUM_LABEL_INFORMATION_LIST,
          action_get_title_information_list},
       {MENU_ENUM_LABEL_INFORMATION,
@@ -1500,6 +1503,9 @@ static int menu_cbs_init_bind_title_compare_label(menu_file_list_cbs_t *cbs,
             break;
          case MENU_ENUM_LABEL_LOG_DIR:
             BIND_ACTION_GET_TITLE(cbs, action_get_title_log_dir);
+            break;
+         case MENU_ENUM_LABEL_SET_PATCH:
+            BIND_ACTION_GET_TITLE(cbs, action_get_title_set_patch);
             break;
          case MENU_ENUM_LABEL_INFORMATION_LIST:
             BIND_ACTION_GET_TITLE(cbs, action_get_title_information_list);

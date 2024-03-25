@@ -9001,6 +9001,14 @@ MSG_HASH(
    "Reset the core associated with this content."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_SET_PATCH,
+   "Set Patch"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_SET_PATCH,
+   "Choose which patch to apply to this content."
+)
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_INFORMATION,
    "Information"
    )

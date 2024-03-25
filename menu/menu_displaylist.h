@@ -262,6 +262,7 @@ enum menu_displaylist_ctl_state
    DISPLAYLIST_BROWSE_URL_START,
    DISPLAYLIST_LOAD_CONTENT_LIST,
    DISPLAYLIST_LOAD_CONTENT_SPECIAL,
+   DISPLAYLIST_PATCH_LIST,
    DISPLAYLIST_INFORMATION_LIST,
    DISPLAYLIST_INFORMATION,
    DISPLAYLIST_CONTENT_SETTINGS,
@@ -329,7 +330,7 @@ enum menu_dl_flags
    MD_FLAG_DOWNLOAD_CORE                 = (1 << 7), /* Should a 'download core' entry be pushed onto the list?
 						      * This will be set to true in case there are no currently
 						      * installed cores. */
-   MD_FLAG_NEED_NAVIGATION_CLEAR         = (1 << 8)  /* Does the navigation index need to be cleared 
+   MD_FLAG_NEED_NAVIGATION_CLEAR         = (1 << 8)  /* Does the navigation index need to be cleared
                                                       * to 0 (first entry) ? */
 };
 

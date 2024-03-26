@@ -4914,6 +4914,49 @@ static unsigned menu_displaylist_parse_pl_thumbnail_download_list(
 }
 #endif
 
+static void menu_displaylist_patch_list(
+      menu_handle_t *menu, file_list_t *info_list)
+{
+   char tmp[8192];
+   playlist_t *playlist                = playlist_get_cached();
+   unsigned idx                        = menu->rpl_entry_selection_ptr;
+   const struct playlist_entry *entry  = NULL;
+
+   playlist_get_index(playlist, idx, &entry);
+
+   const char *patches_dir;
+
+   char *modified_path = entry->path;
+   char *archPtr = NULL;
+   archPtr = path_get_archive_delim(modified_path);
+
+   if(archPtr != NULL) {
+      *archPtr = '\0';
+   }
+
+   modified_path = path_remove_extension(modified_path);
+   modified_path = string_to_lower(modified_path);
+   fill_pathname(tmp, modified_path, "_patches", sizeof(tmp));
+
+   patches_dir = tmp;
+
+   menu_entries_append(info_list,
+         "No Patch",
+         "foo",
+         0,
+         FILE_TYPE_NONE, 0, 0, NULL);
+   menu_entries_append(info_list,
+         patches_dir,
+         "bar",
+         0,
+         FILE_TYPE_NONE, 0, 0, NULL);
+   menu_entries_append(info_list,
+         "Egyptian Reskin",
+         "baz",
+         0,
+         FILE_TYPE_NONE, 0, 0, NULL);
+}
+
 static unsigned menu_displaylist_parse_content_information(
       menu_handle_t *menu, settings_t *settings, file_list_t *info_list)
 {
@@ -12864,24 +12907,7 @@ bool menu_displaylist_ctl(enum menu_displaylist_ctl_state type,
             break;
          case DISPLAYLIST_PATCH_LIST:
             menu_entries_clear(info->list);
-            count=0;
-            menu_entries_append(info->list,
-                  "No Patch",
-                  "foo",
-                  0,
-                  FILE_TYPE_NONE, 0, 0, NULL);
-            count++;
-            menu_entries_append(info->list,
-                  "My Custom Adventure",
-                  "bar",
-                  0,
-                  FILE_TYPE_NONE, 0, 0, NULL);
-            count++;
-            menu_entries_append(info->list,
-                  "Egyptian Reskin",
-                  "baz",
-                  0,
-                  FILE_TYPE_NONE, 0, 0, NULL);
+            menu_displaylist_patch_list(menu, info->list);
 
             info->flags       |= MD_FLAG_NEED_REFRESH
                                | MD_FLAG_NEED_PUSH;

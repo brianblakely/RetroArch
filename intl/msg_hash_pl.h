@@ -504,6 +504,10 @@ MSG_HASH(
    "Wymagane API grafiki"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CORE_INFO_CORE_PATH,
+   "Pełna ścieżka rdzenia"
+)
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_CORE_INFO_SAVESTATE_SUPPORT_LEVEL,
    "Wsparcie Zapisu Stanu"
    )
@@ -5926,6 +5930,24 @@ MSG_HASH(
    MENU_ENUM_SUBLABEL_QUICK_MENU_SHOW_ADD_TO_FAVORITES,
    "Pokaż opcję 'Dodaj do ulubionych'."
    )
+
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_ADD_TO_PLAYLIST,
+   "Dodaj do playlisty"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_ADD_TO_PLAYLIST,
+   "Dodaj zawartość do listy odtwarzania."
+   )
+MSG_HASH(
+   MSG_ADDED_TO_PLAYLIST,
+   "Dodano do playlisty"
+   )
+MSG_HASH(
+   MSG_ADD_TO_PLAYLIST_FAILED,
+   "Nie udało się dodać do playlisty: playlista pełna"
+   )
+
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_QUICK_MENU_SHOW_SET_CORE_ASSOCIATION,
    "Pokaż 'Ustaw powiązanie rdzenia'"
@@ -6233,10 +6255,6 @@ MSG_HASH(
    "Wyjście usługi AI"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_AI_SERVICE_MODE,
-   "Pokaż tłumaczenie jako nakładkę obrazu (tryb obrazu), jako bezpośredni dźwięk (Speech), tekst na mowę (Narrator) lub nakładkę tekstu (Text)."
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_AI_SERVICE_URL,
    "Adres URL usługi AI"
    )
@@ -6275,22 +6293,6 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_AI_SERVICE_TARGET_LANG,
    "Język, który serwis przetłumaczy. \"Domyślnie\" to język angielski."
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_AI_SERVICE_POLL_DELAY,
-   "Opóźnienie automatycznego sprawdzania usług AI"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_AI_SERVICE_POLL_DELAY,
-   "Minimalne opóźnienie w ms między połączeniami automatycznymi. Obniża reaktywność, ale zwiększa wydajność procesora."
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_AI_SERVICE_TEXT_POSITION,
-   "Zastępowanie pozycji tekstowej usługi AI"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_AI_SERVICE_TEXT_POSITION,
-   "Zastąp pozycję nakładki, gdy usługa jest w trybie tekstowym."
    )
 
 /* Settings > Accessibility */
@@ -8839,6 +8841,18 @@ MSG_HASH(
    "Wznów tryb osiągnięć hardcore"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CHEEVOS_IDENTIFYING_GAME,
+   "Rozpoznawanie gry"
+)
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CHEEVOS_FETCHING_GAME_DATA,
+   "Pobieranie danych gry"
+)
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CHEEVOS_STARTING_SESSION,
+   "Rozpoczynanie sesji"
+)
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_NOT_LOGGED_IN,
    "Nie jesteś zalogowany"
 )
@@ -9050,10 +9064,6 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_AI_SERVICE_NARRATOR_MODE,
    "Tryb Narratora"
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_AI_SERVICE_TEXT_POSITION_BOTTOM,
-   "Dolny"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_PLAYLIST_ENTRY_REMOVE_ENABLE_HIST_FAV,

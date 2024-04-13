@@ -3727,6 +3727,8 @@ MSG_HASH(
    "إظهار خيارات 'الأظلال'."
    )
 
+
+
 /* Settings > User Interface > Views > Settings */
 
 
@@ -5490,10 +5492,6 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_AI_SERVICE_NARRATOR_MODE,
    "وضع المشرف"
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_AI_SERVICE_TEXT_POSITION_TOP,
-   "أعلى"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_PLAYLIST_ENTRY_REMOVE_ENABLE_HIST_FAV,

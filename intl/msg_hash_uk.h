@@ -3907,6 +3907,8 @@ MSG_HASH(
    "Показати пункт меню «Зберегти параметри на диск» у меню «Параметри > Керування параметрами ядра»."
    )
 
+
+
 /* Settings > User Interface > Views > Settings */
 
 MSG_HASH(
@@ -5190,10 +5192,6 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_AI_SERVICE_NARRATOR_MODE,
    "Режим Оповідача"
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_AI_SERVICE_TEXT_POSITION_TOP,
-   "Верх"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_PLAYLIST_ENTRY_REMOVE_ENABLE_HIST_FAV,

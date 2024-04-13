@@ -4,6 +4,19 @@ MSG_HASH(
    "switch_cpu_profile"
    )
 #endif
+
+MSG_HASH(
+   MENU_ENUM_LABEL_ADD_TO_PLAYLIST,
+   "playlist_add"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_DEFERRED_ADD_TO_PLAYLIST_LIST,
+   "deferred_add_to_playlist_list"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_ADD_ENTRY_TO_PLAYLIST,
+   "add_entry_to_playlist"
+   )
 MSG_HASH(
    MENU_ENUM_LABEL_ACCOUNTS_CHEEVOS_USERNAME,
    "accounts_cheevos_username"
@@ -6268,18 +6281,6 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_AI_SERVICE_SOURCE_LANG,
    "ai_service_source_lang"
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_AI_SERVICE_POLL_DELAY,
-   "ai_service_poll_delay"
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_AI_SERVICE_TEXT_POSITION,
-   "ai_service_text_position"
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_AI_SERVICE_TEXT_PADDING,
-   "ai_service_text_padding"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_SETTINGS_SHOW_DRIVERS,

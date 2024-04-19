@@ -2536,6 +2536,10 @@ MSG_HASH(
    MENU_ENUM_LABEL_VALUE_AUTO_SHADERS_ENABLE,
    "Carregar os shaders automaticamente"
    )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_GLOBAL_CORE_OPTIONS,
+   "Utilizar ficheiro de parâmetros globais do núcleo"
+   )
 
 /* Settings > Saving */
 
@@ -2955,6 +2959,22 @@ MSG_HASH( /* FIXME Not RGUI specific */
 /* Settings > User Interface > Menu Item Visibility > Quick Menu */
 
 
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_ADD_TO_PLAYLIST,
+   "Adicionar à lista de reprodução"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_ADD_TO_PLAYLIST,
+   "Adiciona o conteúdo a uma lista de reprodução."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_CREATE_NEW_PLAYLIST,
+   "Criar nova lista de reprodução"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_CREATE_NEW_PLAYLIST,
+   "Cria uma nova lista de reprodução e adiciona a entrada atual à mesma."
+   )
 
 
 /* Settings > User Interface > Views > Settings */
@@ -3178,6 +3198,10 @@ MSG_HASH(
    "Permitir a remoção de entradas"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_PLAYLIST_SHOW_INLINE_CORE_NAME,
+   "Mostrar núcleos associados nas listas de reprodução"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_PLAYLIST_SUBLABEL_CORE,
    "Núcleo:"
    )
@@ -3185,9 +3209,29 @@ MSG_HASH(
    MENU_ENUM_LABEL_VALUE_TIME_UNIT_SECONDS_PLURAL,
    "segundos"
    )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_SCAN_WITHOUT_CORE_MATCH,
+   "Analisar sem correspondência do núcleo"
+   )
    
 /* Settings > Playlists > Playlist Management */
 
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_PLAYLIST_MANAGER_DEFAULT_CORE,
+   "Núcleo padrão"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_PLAYLIST_MANAGER_DEFAULT_CORE,
+   "Especifica o núcleo a utilizar no início do conteúdo através de uma entrada de lista de reprodução que não tem uma associação de núcleo existente."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_PLAYLIST_MANAGER_RESET_CORES,
+   "Redefinir associações do núcleo"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_PLAYLIST_MANAGER_RESET_CORES,
+   "Remover as associações do núcleo existentes para todas as entradas da lista de reprodução."
+   )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_DELETE_PLAYLIST,
    "Apagar a lista de reprodução"
@@ -3398,6 +3442,14 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_MANUAL_CONTENT_SCAN_SYSTEM_NAME,
    "Nome do sistema"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_MANUAL_CONTENT_SCAN_CORE_NAME,
+   "Núcleo padrão"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_MANUAL_CONTENT_SCAN_CORE_NAME,
+   "Selecionar um núcleo a ser utilizado por padrão ao iniciar o conteúdo analisado."
    )
 
 /* Explore tab */
@@ -4084,14 +4136,6 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_XMB_ICON_THEME_SYSTEMATIC,
    "Sistemático"
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_XMB_ICON_THEME_NEOACTIVE,
-   "Ativo e moderno"
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_XMB_ICON_THEME_RETROACTIVE,
-   "Retroativo"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_XMB_ICON_THEME_RETROSYSTEM,

@@ -5445,7 +5445,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_INPUT_OVERLAY_MOUSE_SWIPE_THRESHOLD,
-   "Ajuster la plage de dérive permise lors de la détection d'un appui long ou d'une tape. Exprimé en pourcentage de la dimension de l'écran plus petite."
+   "Ajuster la plage de dérive permise lors de la détection d'un appui long ou d'une tape. Exprimé en pourcentage de la dimension de l'écran la plus petite."
    )
 
 /* Settings > On-Screen Display > Video Layout */
@@ -6881,6 +6881,10 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_AI_SERVICE_MODE,
    "Sortie du service IA "
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_AI_SERVICE_MODE,
+   "Afficher la traduction en tant que superposition de texte (Mode image), lecture Text-To-Speech (Mode traduction vocale), ou en utilisant un narrateur système comme NVDA (Mode narrateur)."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_AI_SERVICE_URL,
@@ -11272,14 +11276,6 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_XMB_ICON_THEME_SYSTEMATIC,
    "Systématique"
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_XMB_ICON_THEME_NEOACTIVE,
-   "NéoActif"
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_XMB_ICON_THEME_RETROACTIVE,
-   "RétroActif"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_XMB_ICON_THEME_RETROSYSTEM,

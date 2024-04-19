@@ -2989,7 +2989,7 @@ static int action_ok_eject_disc(const char *path,
       const char *label, unsigned type, size_t idx, size_t entry_idx)
 {
 #ifdef HAVE_CDROM
-   system("eject & disown");
+   system("nohup eject 2>&1 >/dev/null & exit");
 #endif /* HAVE_CDROM */
    return 0;
 }
@@ -4008,10 +4008,10 @@ static int action_ok_path_manual_scan_directory(const char *path,
        * can start with /private and this ensures the path starts with it.
        * This will allow the path to be properly substituted when
        * fill_pathname_expand_special() is called. */
-      char real_content_dir[PATH_MAX_LENGTH];
-      real_content_dir[0] = '\0';
-      realpath(content_dir, real_content_dir);
-      strlcpy(content_dir, real_content_dir, sizeof(content_dir));
+      char tmp_dir[PATH_MAX_LENGTH];
+      tmp_dir[0] = '\0';
+      fill_pathname_expand_special(tmp_dir, content_dir, sizeof(content_dir));
+      realpath(tmp_dir, content_dir);
    }
 #endif
 
@@ -6718,8 +6718,15 @@ int action_ok_push_filebrowser_list_dir_select(const char *path,
 
    /* Start browsing from current directory */
    get_current_menu_value(menu_st, current_value, sizeof(current_value));
+#if IOS
+   char tmp[PATH_MAX_LENGTH];
+   fill_pathname_expand_special(tmp, current_value, sizeof(tmp));
+   if (!path_is_directory(tmp))
+      current_value[0] = '\0';
+#else
    if (!path_is_directory(current_value))
       current_value[0] = '\0';
+#endif
 
    filebrowser_set_type(FILEBROWSER_SELECT_DIR);
    strlcpy(menu->filebrowser_label, label, sizeof(menu->filebrowser_label));

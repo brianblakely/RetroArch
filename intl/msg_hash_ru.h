@@ -6947,6 +6947,10 @@ MSG_HASH(
    "Режим вывода для AI-сервиса"
    )
 MSG_HASH(
+   MENU_ENUM_SUBLABEL_AI_SERVICE_MODE,
+   "Выводить перевод текстовым оверлеем (Режим изображения), преобразовывать текст в речь (Режим озвучивания) или использовать экранный диктор по типу NVDA (Режим диктора)."
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_AI_SERVICE_URL,
    "Сетевой адрес AI-сервиса"
    )
@@ -14487,11 +14491,11 @@ MSG_HASH(
    )
 MSG_HASH(
    MSG_CHEAT_INIT_SUCCESS,
-   "Успешно начать поиск читов."
+   "Успешно начат поиск чит-кодов."
    )
 MSG_HASH(
    MSG_CHEAT_INIT_FAIL,
-   "Не получилось начать поиск читов."
+   "Не удалось запустить поиск чит-кодов."
    )
 MSG_HASH(
    MSG_CHEAT_SEARCH_NOT_INITIALIZED,
@@ -14519,7 +14523,7 @@ MSG_HASH(
    )
 MSG_HASH(
    MSG_CHEAT_SEARCH_DELETE_MATCH_SUCCESS,
-   "Удалено совпадение."
+   "Совпадение удалено."
    )
 MSG_HASH(
    MSG_CHEAT_SEARCH_ADDED_MATCHES_TOO_MANY,

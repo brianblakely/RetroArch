@@ -4940,6 +4940,8 @@ static void menu_displaylist_patch_list(
 
    patches_dir = tmp;
 
+   bool pid = path_is_directory(patches_dir);
+
    menu_entries_append(info_list,
          "No Patch",
          "foo",
@@ -4947,6 +4949,11 @@ static void menu_displaylist_patch_list(
          FILE_TYPE_NONE, 0, 0, NULL);
    menu_entries_append(info_list,
          patches_dir,
+         "bar",
+         0,
+         FILE_TYPE_NONE, 0, 0, NULL);
+   menu_entries_append(info_list,
+         pid ? "true" : "false",
          "bar",
          0,
          FILE_TYPE_NONE, 0, 0, NULL);

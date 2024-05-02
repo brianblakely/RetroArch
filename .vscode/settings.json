@@ -12,6 +12,7 @@
    "editor.formatOnSave": false,
    "editor.ruler": [80],
    "files.associations": {
+      "*.opt": "properties",
       "*.h": "c",
       "*.in": "c",
       "*.rh": "c",
@@ -37,7 +38,13 @@
       "xiosbase": "c",
       "xstring": "c",
       "xtree": "c",
-      "xutility": "c"
+      "xutility": "c",
+      "random": "c",
+      "*.tcc": "c",
+      "istream": "c",
+      "ostream": "c",
+      "streambuf": "c",
+      "*.def": "c"
    },
    "C_Cpp.dimInactiveRegions": false,
 }

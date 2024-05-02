@@ -627,6 +627,10 @@ MSG_HASH(
    "Core della CPU"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_JIT_AVAILABLE,
+   "JIT disponibile"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_SYSTEM_INFO_FRONTEND_IDENTIFIER,
    "Identificatore frontend"
    )
@@ -2008,11 +2012,11 @@ MSG_HASH(
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_VIDEO_SCAN_SUBFRAMES,
-   "Simula una linea di scanline di base su più sotto-fotogrammi dividendo lo schermo in verticale e rendendo ogni parte dello schermo in base a quanti sotto-fotogrammi ci sono"
+   "Simula una linea di scanline di base su più sotto-frame dividendo lo schermo su verticalmente e rendendo ogni parte dello schermo in base a quanti sotto-frame ci sono."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_HELP_VIDEO_SCAN_SUBFRAMES,
-   "Simula una linea di scanline di base su più sotto-fotogrammi dividendo lo schermo su verticalmente e rendendo ogni parte dello schermo secondo quanti sotto-fotogrammi ci sono dalla parte superiore dello schermo verso il basso"
+   "Simula una linea di scanline di base su più sotto-frame dividendo lo schermo su verticalmente e rendendo ogni parte dello schermo secondo quanti sotto-frame ci sono dalla parte superiore dello schermo verso il basso."
    )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_VIDEO_GPU_SCREENSHOT,

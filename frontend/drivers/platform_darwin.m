@@ -736,6 +736,17 @@ static int frontend_darwin_parse_drive_list(void *data, bool load_content)
             FILE_TYPE_DIRECTORY, 0, 0, NULL);
    string_list_free(str_list);
 
+#if TARGET_OS_IOS
+   if (   filebrowser_get_type() == FILEBROWSER_NONE ||
+          filebrowser_get_type() == FILEBROWSER_SCAN_FILE ||
+          filebrowser_get_type() == FILEBROWSER_SELECT_FILE)
+      menu_entries_append(list,
+                          msg_hash_to_str(MENU_ENUM_LABEL_VALUE_FILE_BROWSER_OPEN_PICKER),
+                          msg_hash_to_str(MENU_ENUM_LABEL_FILE_BROWSER_OPEN_PICKER),
+                          MENU_ENUM_LABEL_FILE_BROWSER_OPEN_PICKER,
+                          MENU_SETTING_ACTION, 0, 0, NULL);
+#endif
+
    ret = 0;
 #endif
 #endif
@@ -792,6 +803,15 @@ static const char* frontend_darwin_get_cpu_model_name(void)
    cpu_features_get_model_name(darwin_cpu_model_name,
          sizeof(darwin_cpu_model_name));
    return darwin_cpu_model_name;
+}
+
+static enum retro_language frontend_darwin_get_user_language(void)
+{
+   char s[128];
+   CFArrayRef langs = CFLocaleCopyPreferredLanguages();
+   CFStringRef langCode = CFArrayGetValueAtIndex(langs, 0);
+   CFStringGetCString(langCode, s, sizeof(s), kCFStringEncodingUTF8);
+   return retroarch_get_language_from_iso(s);
 }
 
 #if (defined(OSX) && (MAC_OS_X_VERSION_MAX_ALLOWED >= 101200))
@@ -960,7 +980,7 @@ frontend_ctx_driver_t frontend_ctx_darwin = {
    NULL,                            /* check_for_path_changes */
    NULL,                            /* set_sustained_performance_mode */
    frontend_darwin_get_cpu_model_name, /* get_cpu_model_name */
-   NULL,                            /* get_user_language   */
+   frontend_darwin_get_user_language, /* get_user_language   */
 #if (defined(OSX) && (MAC_OS_X_VERSION_MAX_ALLOWED >= 101200))
    is_narrator_running_macos,       /* is_narrator_running */
    accessibility_speak_macos,       /* accessibility_speak */

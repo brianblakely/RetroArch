@@ -359,8 +359,6 @@ static int deferred_push_cursor_manager_list_generic(
    char *elem1                   = NULL;
    char *path_cpy                = NULL;
    const char *path              = info->path;
-   struct string_list str_list   = {0};
-   settings_t *settings          = config_get_ptr();
 
    if (!path)
       return -1;
@@ -515,9 +513,6 @@ static int general_push(menu_displaylist_info_t *info,
       case PUSH_ARCHIVE_OPEN_DETECT_CORE:
       case PUSH_DETECT_CORE_LIST:
          {
-            union string_list_elem_attr attr;
-            char newstring[PATH_MAX_LENGTH];
-            struct string_list str_list2      = {0};
             struct retro_system_info *sysinfo =
                &runloop_state_get_ptr()->system.info;
             bool filter_by_current_core       = settings->bools.filter_by_current_core;
@@ -535,14 +530,13 @@ static int general_push(menu_displaylist_info_t *info,
                core_info_get_list(&list);
                if (list && !string_is_empty(list->all_ext))
                {
-                  unsigned x;
-                  struct string_list str_list  = {0};
-                  string_list_initialize(&str_list);
+                  char *tok, *save;
+                  char *all_ext_cpy = strdup(list->all_ext);
 
-                  string_split_noalloc(&str_list,
-                        list->all_ext, "|");
-
-                  for (x = 0; x < str_list.size; x++)
+                  /* If the current core already supports
+                   * this extension, skip adding it */
+                  for (tok = strtok_r(all_ext_cpy, "|", &save); tok;
+                       tok = strtok_r(NULL, "|", &save))
                   {
                      bool exists = false;
 

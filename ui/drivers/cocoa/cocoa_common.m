@@ -42,6 +42,7 @@
 #include "../../../content.h"
 #include "../../../core_info.h"
 #include "../../../defaults.h"
+#include "../../../frontend/frontend.h"
 #include "../../../file_path_special.h"
 #include "../../../menu/menu_cbs.h"
 #include "../../../paths.h"
@@ -107,6 +108,25 @@ void cocoa_file_load_with_detect_core(const char *filename);
 #if !defined(OSX) || __MAC_OS_X_VERSION_MAX_ALLOWED >= 140000
 -(void)step:(CADisplayLink*)target API_AVAILABLE(macos(14.0), ios(3.1), tvos(3.1))
 {
+#if defined(IOS)
+   if ([[UIApplication sharedApplication] applicationState] != UIApplicationStateActive)
+      return;
+
+   int ret = runloop_iterate();
+
+   task_queue_check();
+
+   if (ret == -1)
+   {
+      main_exit(NULL);
+      exit(0);
+      return;
+   }
+
+   uint32_t runloop_flags = runloop_get_flags();
+   if (!(runloop_flags & RUNLOOP_FLAG_IDLE))
+      CFRunLoopWakeUp(CFRunLoopGetMain());
+#endif
 }
 #endif
 
@@ -121,7 +141,7 @@ void cocoa_file_load_with_detect_core(const char *filename);
       view.displayLink = [CADisplayLink displayLinkWithTarget:view selector:@selector(step:)];
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 150000 || __TV_OS_VERSION_MAX_ALLOWED >= 150000
       if (@available(iOS 15.0, tvOS 15.0, *))
-         [view.displayLink setPreferredFrameRateRange:CAFrameRateRangeMake(60, 120, 120)];
+         [view.displayLink setPreferredFrameRateRange:CAFrameRateRangeDefault];
 #endif
       [view.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 #elif defined(OSX) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 140000
@@ -635,10 +655,12 @@ void cocoa_file_load_with_detect_core(const char *filename);
     swipe.direction                 = UISwipeGestureRecognizerDirectionDown;
     [self.view addGestureRecognizer:swipe];
 #ifdef HAVE_IOS_TOUCHMOUSE
-    [self setupMouseSupport];
+    if (@available(iOS 13, *))
+        [self setupMouseSupport];
 #endif
 #ifdef HAVE_IOS_CUSTOMKEYBOARD
-    [self setupEmulatorKeyboard];
+    if (@available(iOS 13, *))
+        [self setupEmulatorKeyboard];
     UISwipeGestureRecognizer *showKeyboardSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(toggleCustomKeyboardUsingSwipe:)];
     showKeyboardSwipe.numberOfTouchesRequired   = 3;
     showKeyboardSwipe.direction                 = UISwipeGestureRecognizerDirectionUp;
@@ -650,8 +672,9 @@ void cocoa_file_load_with_detect_core(const char *filename);
     hideKeyboardSwipe.delegate                  = self;
     [self.view addGestureRecognizer:hideKeyboardSwipe];
 #endif
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 130000
-    [self setupHelperBar];
+#if defined(HAVE_IOS_TOUCHMOUSE) || defined(HAVE_IOS_CUSTOMKEYBOARDS)
+    if (@available(iOS 13, *))
+        [self setupHelperBar];
 #endif
 #elif TARGET_OS_TV
     UISwipeGestureRecognizer *siriSwipeUp    = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSiriSwipe:)];
@@ -690,7 +713,7 @@ void cocoa_file_load_with_detect_core(const char *filename);
 {
     [super viewWillAppear:animated];
 #if TARGET_OS_TV
-    [[WebServer sharedInstance] startUploader];
+    [[WebServer sharedInstance] startServers];
     [WebServer sharedInstance].webUploader.delegate = self;
 #endif
 }
@@ -760,7 +783,7 @@ void cocoa_file_load_with_detect_core(const char *filename);
 #elif TARGET_OS_IOS
         [alert addAction:[UIAlertAction actionWithTitle:@"Stop Server" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
             [[WebServer sharedInstance] webUploader].delegate = nil;
-            [[WebServer sharedInstance] stopUploader];
+            [[WebServer sharedInstance] stopServers];
         }]];
 #endif
         [self presentViewController:alert animated:YES completion:^{

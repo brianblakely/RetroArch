@@ -408,12 +408,15 @@ bool command_get_config_param(command_t *cmd, const char* arg)
       input_driver_state_t *input_st = input_state_get_ptr();
       value            = value_dynamic;
       value_dynamic[0] = '\0';
-      if(input_st->bsv_movie_state_handle)
-         snprintf(value_dynamic, sizeof(value_dynamic), "%lld %u",
-               (long long)(input_st->bsv_movie_state_handle->identifier),
-               input_st->bsv_movie_state.flags);
+      if(input_st->bsv_movie_state_handle) {
+         bsv_movie_t *movie = input_st->bsv_movie_state_handle;
+         snprintf(value_dynamic, sizeof(value_dynamic), "%lld %u %lld",
+               (long long)(movie->identifier),
+                  input_st->bsv_movie_state.flags,
+                  (long long)(movie->frame_counter));
+      }
       else
-         strlcpy(value_dynamic, "0 0", sizeof(value_dynamic));
+         strlcpy(value_dynamic, "0 0 0", sizeof(value_dynamic));
    }
    #endif
    /* TODO: query any string */
@@ -1450,12 +1453,12 @@ static void scan_states(settings_t *settings,
 
    size_t i, cnt                      = 0;
    size_t cnt_in_range                = 0;
-   char state_dir[PATH_MAX_LENGTH];
+   char state_dir[DIR_MAX_LENGTH];
    /* Base name of 128 may be too short for some (<<1%) of the
       tosec-based file names, but in practice truncating will not
       lead to mismatch */
    char state_base[128];
- 
+
    fill_pathname_basedir(state_dir, runloop_st->name.savestate,
          sizeof(state_dir));
 
@@ -1534,7 +1537,7 @@ static void scan_states(settings_t *settings,
       {
          /* Gap index: lowest free slot in the wraparound range */
          if (gap_idx == UINT_MAX)
-            gap_idx = i;
+            gap_idx = (unsigned)i;
       }
       /* Occupied save slots */
       else
@@ -1543,7 +1546,7 @@ static void scan_states(settings_t *settings,
             after gap index */
          if (gap_idx <  UINT_MAX &&
              del_idx == UINT_MAX)
-            del_idx = i;
+            del_idx = (unsigned)i;
       }
    }
 
@@ -1605,7 +1608,7 @@ static void scan_states(settings_t *settings,
    }
 
    RARCH_DBG("[State]: savestate scanning finished, used slots (in range): "
-             "%d (%d), max:%d, load index %d, gap index %d, delete index %d\n", 
+             "%d (%d), max:%d, load index %d, gap index %d, delete index %d\n",
              cnt, cnt_in_range, max_idx, loa_idx, gap_idx, del_idx);
 
    if (last_index != NULL)
@@ -1686,7 +1689,7 @@ static void command_event_set_savestate_garbage_collect(settings_t *settings)
    {
       filestream_delete(state_to_delete);
       RARCH_DBG("[State]: garbage collect, deleting \"%s\" \n",state_to_delete);
-      /* Construct the save state thumbnail name 
+      /* Construct the save state thumbnail name
        * and delete that one as well. */
       i = strlen(state_to_delete);
       strlcpy(state_to_delete + i,".png",STRLEN_CONST(".png")+1);
@@ -1699,7 +1702,7 @@ void command_event_set_replay_auto_index(settings_t *settings)
 {
    size_t i;
    char state_base[128];
-   char state_dir[PATH_MAX_LENGTH];
+   char state_dir[DIR_MAX_LENGTH];
 
    struct string_list *dir_list      = NULL;
    unsigned max_idx                  = 0;
@@ -1766,7 +1769,7 @@ void command_event_set_replay_garbage_collect(
 {
   /* TODO: debugme */
    size_t i, cnt = 0;
-   char state_dir[PATH_MAX_LENGTH];
+   char state_dir[DIR_MAX_LENGTH];
    char state_base[128];
    runloop_state_t *runloop_st       = runloop_state_get_ptr();
 
@@ -1873,9 +1876,9 @@ bool command_event_save_core_config(
       const char *rarch_path_config)
 {
    char msg[128];
-   char config_name[255];
    char config_path[PATH_MAX_LENGTH];
-   char config_dir[PATH_MAX_LENGTH];
+   char config_name[NAME_MAX_LENGTH];
+   char config_dir[DIR_MAX_LENGTH];
    bool new_path_available         = false;
    bool overrides_active           = false;
    const char *core_path           = NULL;

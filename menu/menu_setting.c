@@ -1050,8 +1050,8 @@ static int setting_generic_action_ok_default(
 
 void setting_generic_handle_change(rarch_setting_t *setting)
 {
-   settings_t *settings = config_get_ptr();
-   settings->modified   = true;
+   settings_t *settings  = config_get_ptr();
+   settings->flags      |= SETTINGS_FLG_MODIFIED;
 
    if (setting->change_handler)
       setting->change_handler(setting);
@@ -1391,7 +1391,7 @@ static rarch_setting_t setting_action_setting(const char* name,
 
 /**
  * setting_group_setting:
- * @type               : type of settting.
+ * @type               : type of setting.
  * @name               : name of setting.
  *
  * Initializes a setting of type ST_GROUP.
@@ -1891,7 +1891,7 @@ static rarch_setting_t setting_string_setting(enum setting_type type,
 
 /**
  * setting_string_setting_options:
- * @type               : type of settting.
+ * @type               : type of setting.
  * @name               : name of setting.
  * @short_description  : Short description of setting.
  * @target             : Target of bind setting.
@@ -1930,7 +1930,7 @@ static rarch_setting_t setting_string_setting_options(enum setting_type type,
 
 /**
  * setting_subgroup_setting:
- * @type               : type of settting.
+ * @type               : type of setting.
  * @name               : name of setting.
  * @parent_name        : group that the subgroup setting belongs to.
  *
@@ -2569,8 +2569,8 @@ static int setting_action_ok_bind_all_save_autoconfig(
    if (!string_is_empty(name) &&
          config_save_autoconf_profile(name, index_offset))
    {
-      char buf[PATH_MAX_LENGTH];
-      char msg[PATH_MAX_LENGTH];
+      char buf[128];
+      char msg[NAME_MAX_LENGTH];
       config_get_autoconf_profile_filename(name, index_offset, buf, sizeof(buf));
       snprintf(msg, sizeof(msg),msg_hash_to_str(MSG_AUTOCONFIG_FILE_SAVED_SUCCESSFULLY_NAMED),buf);
       runloop_msg_queue_push(
@@ -3391,7 +3391,7 @@ static void setting_get_string_representation_uint_menu_icon_thumbnails(
    }
 }
 
-static void setting_set_string_representation_timedate_date_seperator(char *s)
+static void setting_set_string_representation_timedate_date_separator(char *s)
 {
    settings_t *settings                  = config_get_ptr();
    unsigned menu_timedate_date_separator = settings ?
@@ -3550,7 +3550,7 @@ static void setting_get_string_representation_uint_menu_timedate_style(
    }
 
    /* Change date separator, if required */
-   setting_set_string_representation_timedate_date_seperator(s);
+   setting_set_string_representation_timedate_date_separator(s);
 }
 
 static void setting_get_string_representation_uint_menu_timedate_date_separator(
@@ -5248,7 +5248,7 @@ static void setting_get_string_representation_uint_playlist_sublabel_last_played
    }
 
    /* Change date separator, if required */
-   setting_set_string_representation_timedate_date_seperator(s);
+   setting_set_string_representation_timedate_date_separator(s);
 }
 
 static void setting_get_string_representation_uint_playlist_inline_core_display_type(
@@ -5766,7 +5766,7 @@ static int setting_action_left_input_device_index(
    else
       *p = MAX_INPUT_DEVICES - 1;
 
-   settings->modified = true;
+   settings->flags |= SETTINGS_FLG_MODIFIED;
    return 0;
 }
 
@@ -5786,7 +5786,7 @@ static int setting_action_left_input_device_reservation_type(
    else
       *p = INPUT_DEVICE_RESERVATION_LAST - 1;
 
-   settings->modified = true;
+   settings->flags |= SETTINGS_FLG_MODIFIED;
    return 0;
 }
 
@@ -5807,7 +5807,7 @@ static int setting_action_left_input_mouse_index(
    else
       *p = MAX_INPUT_DEVICES - 1;
 
-   settings->modified = true;
+   settings->flags |= SETTINGS_FLG_MODIFIED;
    return 0;
 }
 
@@ -7169,6 +7169,37 @@ static void setting_get_string_representation_poll_type_behavior(
    }
 }
 
+#ifdef HAVE_RUNAHEAD
+static void setting_get_string_representation_runahead_mode(
+      rarch_setting_t *setting,
+      char *s, size_t len)
+{
+   if (!setting)
+      return;
+
+   switch (*setting->value.target.unsigned_integer)
+   {
+      case MENU_RUNAHEAD_MODE_SINGLE_INSTANCE:
+         strlcpy(s, msg_hash_to_str(
+               MENU_ENUM_LABEL_VALUE_RUNAHEAD_MODE_SINGLE_INSTANCE), len);
+         break;
+#if (defined(HAVE_DYNAMIC) || defined(HAVE_DYLIB))
+      case MENU_RUNAHEAD_MODE_SECOND_INSTANCE:
+         strlcpy(s, msg_hash_to_str(
+               MENU_ENUM_LABEL_VALUE_RUNAHEAD_MODE_SECOND_INSTANCE), len);
+         break;
+#endif
+      case MENU_RUNAHEAD_MODE_PREEMPTIVE_FRAMES:
+         strlcpy(s, msg_hash_to_str(
+               MENU_ENUM_LABEL_VALUE_RUNAHEAD_MODE_PREEMPTIVE_FRAMES), len);
+         break;
+      default:
+         strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_OFF), len);
+         break;
+   }
+}
+#endif
+
 static void setting_get_string_representation_input_touch_scale(rarch_setting_t *setting,
       char *s, size_t len)
 {
@@ -7311,6 +7342,59 @@ static void setting_get_string_representation_uint_quit_on_close_content(
          break;
       case QUIT_ON_CLOSE_CONTENT_CLI:
          strlcpy(s, "CLI", len);
+         break;
+   }
+}
+
+static void setting_get_string_representation_uint_video_scale_integer_axis(
+      rarch_setting_t *setting,
+      char *s, size_t len)
+{
+   if (!setting)
+      return;
+
+   switch (*setting->value.target.unsigned_integer)
+   {
+      default:
+      case VIDEO_SCALE_INTEGER_AXIS_Y:
+         strlcpy(s, "Y", len);
+         break;
+      case VIDEO_SCALE_INTEGER_AXIS_Y_X:
+         strlcpy(s, "Y + X", len);
+         break;
+      case VIDEO_SCALE_INTEGER_AXIS_Y_XHALF:
+         strlcpy(s, "Y + X.5", len);
+         break;
+      case VIDEO_SCALE_INTEGER_AXIS_YHALF_XHALF:
+         strlcpy(s, "Y.5 + X.5", len);
+         break;
+      case VIDEO_SCALE_INTEGER_AXIS_X:
+         strlcpy(s, "X", len);
+         break;
+      case VIDEO_SCALE_INTEGER_AXIS_XHALF:
+         strlcpy(s, "X.5", len);
+         break;
+   }
+}
+
+static void setting_get_string_representation_uint_video_scale_integer_scaling(
+      rarch_setting_t *setting,
+      char *s, size_t len)
+{
+   if (!setting)
+      return;
+
+   switch (*setting->value.target.unsigned_integer)
+   {
+      default:
+      case VIDEO_SCALE_INTEGER_SCALING_UNDERSCALE:
+         strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_VIDEO_SCALE_INTEGER_SCALING_UNDERSCALE), len);
+         break;
+      case VIDEO_SCALE_INTEGER_SCALING_OVERSCALE:
+         strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_VIDEO_SCALE_INTEGER_SCALING_OVERSCALE), len);
+         break;
+      case VIDEO_SCALE_INTEGER_SCALING_SMART:
+         strlcpy(s, msg_hash_to_str(MENU_ENUM_LABEL_VALUE_VIDEO_SCALE_INTEGER_SCALING_SMART), len);
          break;
    }
 }
@@ -7962,7 +8046,7 @@ static int setting_action_right_analog_dpad_mode(
 
    port = setting->index_offset;
 
-   settings->modified                     = true;
+   settings->flags |= SETTINGS_FLG_MODIFIED;
    settings->uints.input_analog_dpad_mode[port] =
       (settings->uints.input_analog_dpad_mode[port] + 1)
       % ANALOG_DPAD_LAST;
@@ -8056,7 +8140,7 @@ static int setting_action_right_input_device_index(
    else
       *p = 0;
 
-   settings->modified = true;
+   settings->flags |= SETTINGS_FLG_MODIFIED;
    return 0;
 }
 
@@ -8076,7 +8160,7 @@ static int setting_action_right_input_device_reservation_type(
    else
       *p = 0;
 
-   settings->modified = true;
+   settings->flags |= SETTINGS_FLG_MODIFIED;
    return 0;
 }
 
@@ -8096,7 +8180,7 @@ static int setting_action_right_input_mouse_index(
    else
       *p = 0;
 
-   settings->modified = true;
+   settings->flags |= SETTINGS_FLG_MODIFIED;
    return 0;
 }
 
@@ -8644,23 +8728,23 @@ static void general_write_handler(rarch_setting_t *setting)
          break;
 #endif
       case MENU_ENUM_LABEL_VIDEO_SCALE:
-         settings->modified           = true;
-         settings->uints.video_scale  = *setting->value.target.unsigned_integer;
+         settings->flags                  |= SETTINGS_FLG_MODIFIED;
+         settings->uints.video_scale       = *setting->value.target.unsigned_integer;
 
          if (!settings->bools.video_fullscreen)
             rarch_cmd = CMD_EVENT_REINIT;
          break;
       case MENU_ENUM_LABEL_VIDEO_HDR_ENABLE:
-         settings->modified               = true;
-         settings->bools.video_hdr_enable = *setting->value.target.boolean;
+         settings->flags                  |= SETTINGS_FLG_MODIFIED;
+         settings->bools.video_hdr_enable  = *setting->value.target.boolean;
 
          rarch_cmd = CMD_EVENT_REINIT;
          break;
       case MENU_ENUM_LABEL_VIDEO_HDR_MAX_NITS:
          {
-            video_driver_state_t *video_st      = video_state_get_ptr();
-            settings->modified                  = true;
-            settings->floats.video_hdr_max_nits = roundf(*setting->value.target.fraction);
+            video_driver_state_t *video_st       = video_state_get_ptr();
+            settings->flags                     |= SETTINGS_FLG_MODIFIED;
+            settings->floats.video_hdr_max_nits  = roundf(*setting->value.target.fraction);
 
             if (video_st && video_st->poke && video_st->poke->set_hdr_max_nits)
                video_st->poke->set_hdr_max_nits(video_st->data, settings->floats.video_hdr_max_nits);
@@ -8668,10 +8752,10 @@ static void general_write_handler(rarch_setting_t *setting)
          break;
       case MENU_ENUM_LABEL_VIDEO_HDR_PAPER_WHITE_NITS:
          {
-            settings_t *settings                         = config_get_ptr();
-            video_driver_state_t *video_st               = video_state_get_ptr();
-            settings->modified                           = true;
-            settings->floats.video_hdr_paper_white_nits  = roundf(*setting->value.target.fraction);
+            settings_t *settings                          = config_get_ptr();
+            video_driver_state_t *video_st                = video_state_get_ptr();
+            settings->flags                              |= SETTINGS_FLG_MODIFIED;
+            settings->floats.video_hdr_paper_white_nits   = roundf(*setting->value.target.fraction);
 
 
             if (video_st && video_st->poke && video_st->poke->set_hdr_paper_white_nits)
@@ -8680,9 +8764,9 @@ static void general_write_handler(rarch_setting_t *setting)
          break;
       case MENU_ENUM_LABEL_VIDEO_HDR_CONTRAST:
          {
-            video_driver_state_t *video_st      = video_state_get_ptr();
-            settings->modified                  = true;
-            settings->floats.video_hdr_display_contrast = *setting->value.target.fraction;
+            video_driver_state_t *video_st                = video_state_get_ptr();
+            settings->flags                              |= SETTINGS_FLG_MODIFIED;
+            settings->floats.video_hdr_display_contrast   = *setting->value.target.fraction;
 
             if (video_st && video_st->poke && video_st->poke->set_hdr_contrast)
                video_st->poke->set_hdr_contrast(video_st->data, VIDEO_HDR_MAX_CONTRAST - settings->floats.video_hdr_display_contrast);
@@ -8690,9 +8774,9 @@ static void general_write_handler(rarch_setting_t *setting)
          break;
       case MENU_ENUM_LABEL_VIDEO_HDR_EXPAND_GAMUT:
          {
-            video_driver_state_t *video_st         = video_state_get_ptr();
-            settings->modified                     = true;
-            settings->bools.video_hdr_expand_gamut = *setting->value.target.boolean;
+            video_driver_state_t *video_st                = video_state_get_ptr();
+            settings->flags                              |= SETTINGS_FLG_MODIFIED;
+            settings->bools.video_hdr_expand_gamut        = *setting->value.target.boolean;
 
             if (video_st && video_st->poke && video_st->poke->set_hdr_expand_gamut)
                video_st->poke->set_hdr_expand_gamut(video_st->data, settings->bools.video_hdr_expand_gamut);
@@ -8703,7 +8787,7 @@ static void general_write_handler(rarch_setting_t *setting)
          break;
 #ifdef ANDROID
        case MENU_ENUM_LABEL_INPUT_SELECT_PHYSICAL_KEYBOARD:
-           settings->modified           = true;
+           settings->flags |= SETTINGS_FLG_MODIFIED;
            strlcpy(settings->arrays.input_android_physical_keyboard, setting->value.target.string, sizeof(settings->arrays.input_android_physical_keyboard));
            break;
 #endif
@@ -9166,96 +9250,68 @@ static void frontend_log_level_change_handler(rarch_setting_t *setting)
 #ifdef HAVE_RUNAHEAD
 static void runahead_change_handler(rarch_setting_t *setting)
 {
-   settings_t *settings              = config_get_ptr();
-   struct menu_state *menu_st        = menu_state_get_ptr();
-   bool run_ahead_enabled            = settings->bools.run_ahead_enabled;
-   bool preempt_enabled              = settings->bools.preemptive_frames_enable;
-#if (defined(HAVE_DYNAMIC) || defined(HAVE_DYLIB))
-   unsigned run_ahead_frames         = settings->uints.run_ahead_frames;
-   bool run_ahead_secondary_instance = settings->bools.run_ahead_secondary_instance;
-#endif
+   settings_t *settings        = config_get_ptr();
+   struct menu_state *menu_st  = menu_state_get_ptr();
+   runloop_state_t *runloop_st = runloop_state_get_ptr();
+   preempt_t *preempt          = runloop_st->preempt_data;
+   unsigned run_ahead_frames   = settings->uints.run_ahead_frames;
+   bool preempt_enable, run_ahead_enabled, secondary_instance;
 
    if (!setting)
       return;
 
-   switch (setting->enum_idx)
+   if (setting->enum_idx == MENU_ENUM_LABEL_RUNAHEAD_MODE)
    {
-      case MENU_ENUM_LABEL_RUN_AHEAD_ENABLED:
-         if (run_ahead_enabled && preempt_enabled)
-         {
-            /* Disable preemptive frames and inform user */
-            settings->bools.preemptive_frames_enable = false;
-            preempt_deinit(runloop_state_get_ptr());
-            runloop_msg_queue_push(
-                  msg_hash_to_str(MSG_PREEMPT_DISABLED), 1, 100, false,
-                  NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
-         }
-         menu_st->flags |=  MENU_ST_FLAG_ENTRIES_NEED_REFRESH;
-         /* fall-through */
-      case MENU_ENUM_LABEL_RUN_AHEAD_FRAMES:
+      switch (menu_st->runahead_mode)
+      {
+         case MENU_RUNAHEAD_MODE_SINGLE_INSTANCE:
+            settings->bools.run_ahead_enabled            = true;
+            settings->bools.run_ahead_secondary_instance = false;
+            settings->bools.preemptive_frames_enable     = false;
+            break;
 #if (defined(HAVE_DYNAMIC) || defined(HAVE_DYLIB))
-      case MENU_ENUM_LABEL_RUN_AHEAD_SECONDARY_INSTANCE:
-         /* If any changes here will cause second
-          * instance runahead to be enabled, must
-          * re-apply cheats to ensure that they
-          * propagate to the newly-created secondary
-          * core */
-         if (     run_ahead_enabled
-               && (run_ahead_frames > 0)
-               && run_ahead_secondary_instance
-               && !retroarch_ctl(RARCH_CTL_IS_SECOND_CORE_LOADED, NULL)
-               && retroarch_ctl(RARCH_CTL_IS_SECOND_CORE_AVAILABLE, NULL)
-               && command_event(CMD_EVENT_LOAD_SECOND_CORE, NULL))
-            command_event(CMD_EVENT_CHEATS_APPLY, NULL);
+         case MENU_RUNAHEAD_MODE_SECOND_INSTANCE:
+            settings->bools.run_ahead_enabled            = true;
+            settings->bools.run_ahead_secondary_instance = true;
+            settings->bools.preemptive_frames_enable     = false;
+            break;
 #endif
-         break;
-      default:
-         break;
-   }
-}
+         case MENU_RUNAHEAD_MODE_PREEMPTIVE_FRAMES:
+            settings->bools.run_ahead_enabled            = false;
+            settings->bools.preemptive_frames_enable     = true;
+            break;
+         default:
+            settings->bools.run_ahead_enabled            = false;
+            settings->bools.preemptive_frames_enable     = false;
+            break;
+      }
 
-static void preempt_change_handler(rarch_setting_t *setting)
-{
-   settings_t *settings       = config_get_ptr();
-   bool preempt_enabled       = settings->bools.preemptive_frames_enable;
-   bool run_ahead_enabled     = settings->bools.run_ahead_enabled;
-   preempt_t *preempt         = runloop_state_get_ptr()->preempt_data;
-   struct menu_state *menu_st = menu_state_get_ptr();
-#ifdef HAVE_NETWORKING
-   bool netplay_enabled       = netplay_driver_ctl(RARCH_NETPLAY_CTL_IS_ENABLED, NULL);
-#else
-   bool netplay_enabled       = false;
+      menu_st->flags |= MENU_ST_FLAG_ENTRIES_NEED_REFRESH;
+   }
+
+   preempt_enable     = settings->bools.preemptive_frames_enable;
+   run_ahead_enabled  = settings->bools.run_ahead_enabled;
+   secondary_instance = settings->bools.run_ahead_secondary_instance;
+
+   /* Toggle or update preemptive frames if needed */
+   if (     preempt_enable != !!preempt
+         || (preempt && preempt->frames != run_ahead_frames))
+      command_event(CMD_EVENT_PREEMPT_UPDATE, NULL);
+
+#if (defined(HAVE_DYNAMIC) || defined(HAVE_DYLIB))
+   /* If any changes here will cause second
+    * instance runahead to be enabled, must
+    * re-apply cheats to ensure that they
+    * propagate to the newly-created secondary
+    * core */
+   if (     run_ahead_enabled
+         && run_ahead_frames > 0
+         && secondary_instance
+         && !retroarch_ctl(RARCH_CTL_IS_SECOND_CORE_LOADED, NULL)
+         && retroarch_ctl(RARCH_CTL_IS_SECOND_CORE_AVAILABLE, NULL)
+         && command_event(CMD_EVENT_LOAD_SECOND_CORE, NULL))
+      command_event(CMD_EVENT_CHEATS_APPLY, NULL);
 #endif
-
-   if (!setting)
-      return;
-
-   switch (setting->enum_idx)
-   {
-      case MENU_ENUM_LABEL_PREEMPT_ENABLE:
-         if (preempt_enabled && run_ahead_enabled)
-         {
-            /* Disable runahead and inform user */
-            settings->bools.run_ahead_enabled = false;
-            runloop_msg_queue_push(
-                  msg_hash_to_str(MSG_RUNAHEAD_DISABLED), 1, 100, false,
-                  NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
-         }
-
-         if ((preempt_enabled != !!preempt) && !netplay_enabled)
-            command_event(CMD_EVENT_PREEMPT_UPDATE, NULL);
-
-         menu_st->flags |=  MENU_ST_FLAG_ENTRIES_NEED_REFRESH;
-         break;
-      case MENU_ENUM_LABEL_PREEMPT_FRAMES:
-         if (     preempt
-               && preempt->frames != settings->uints.run_ahead_frames
-               && !netplay_enabled)
-            command_event(CMD_EVENT_PREEMPT_UPDATE, NULL);
-         break;
-      default:
-         break;
-   }
 }
 #endif
 
@@ -9517,7 +9573,7 @@ static bool setting_append_list_input_player_options(
     * 2 is the length of '99'; we don't need more users than that.
     */
    static char buffer[MAX_USERS][13+2+1];
-   static char group_label[MAX_USERS][255];
+   static char group_label[MAX_USERS][NAME_MAX_LENGTH];
    unsigned i, j;
    rarch_setting_group_info_t group_info;
    rarch_setting_group_info_t subgroup_info;
@@ -13576,23 +13632,41 @@ static bool setting_append_list(
                   list_info,
                   CMD_EVENT_VIDEO_APPLY_STATE_CHANGES);
 
-            CONFIG_BOOL(
+            CONFIG_UINT(
                   list, list_info,
-                  &settings->bools.video_scale_integer_overscale,
-                  MENU_ENUM_LABEL_VIDEO_SCALE_INTEGER_OVERSCALE,
-                  MENU_ENUM_LABEL_VALUE_VIDEO_SCALE_INTEGER_OVERSCALE,
-                  DEFAULT_SCALE_INTEGER_OVERSCALE,
-                  MENU_ENUM_LABEL_VALUE_OFF,
-                  MENU_ENUM_LABEL_VALUE_ON,
+                  &settings->uints.video_scale_integer_axis,
+                  MENU_ENUM_LABEL_VIDEO_SCALE_INTEGER_AXIS,
+                  MENU_ENUM_LABEL_VALUE_VIDEO_SCALE_INTEGER_AXIS,
+                  DEFAULT_SCALE_INTEGER_AXIS,
                   &group_info,
                   &subgroup_info,
                   parent_group,
                   general_write_handler,
-                  general_read_handler,
-                  SD_FLAG_NONE);
-            (*list)[list_info->index - 1].action_ok     = setting_bool_action_left_with_refresh;
-            (*list)[list_info->index - 1].action_left   = setting_bool_action_left_with_refresh;
-            (*list)[list_info->index - 1].action_right  = setting_bool_action_right_with_refresh;
+                  general_read_handler);
+            (*list)[list_info->index - 1].action_ok = &setting_action_ok_uint;
+            (*list)[list_info->index - 1].get_string_representation =
+                  &setting_get_string_representation_uint_video_scale_integer_axis;
+            menu_settings_list_current_add_range(list, list_info, 0, VIDEO_SCALE_INTEGER_AXIS_LAST - 1, 1, true, true);
+            MENU_SETTINGS_LIST_CURRENT_ADD_CMD(
+                  list,
+                  list_info,
+                  CMD_EVENT_VIDEO_APPLY_STATE_CHANGES);
+
+            CONFIG_UINT(
+                  list, list_info,
+                  &settings->uints.video_scale_integer_scaling,
+                  MENU_ENUM_LABEL_VIDEO_SCALE_INTEGER_SCALING,
+                  MENU_ENUM_LABEL_VALUE_VIDEO_SCALE_INTEGER_SCALING,
+                  DEFAULT_SCALE_INTEGER_SCALING,
+                  &group_info,
+                  &subgroup_info,
+                  parent_group,
+                  general_write_handler,
+                  general_read_handler);
+            (*list)[list_info->index - 1].action_ok = &setting_action_ok_uint;
+            (*list)[list_info->index - 1].get_string_representation =
+                  &setting_get_string_representation_uint_video_scale_integer_scaling;
+            menu_settings_list_current_add_range(list, list_info, 0, VIDEO_SCALE_INTEGER_SCALING_LAST - 1, 1, true, true);
             MENU_SETTINGS_LIST_CURRENT_ADD_CMD(
                   list,
                   list_info,
@@ -14017,8 +14091,8 @@ static bool setting_append_list(
                   general_write_handler,
                   general_read_handler);
             (*list)[list_info->index - 1].action_ok = &setting_action_ok_uint;
-            (*list)[list_info->index - 1].offset_by = 2;
-            menu_settings_list_current_add_range(list, list_info, (*list)[list_info->index - 1].offset_by, 4, 1, true, true);
+            (*list)[list_info->index - 1].offset_by = MINIMUM_MAX_SWAPCHAIN_IMAGES;
+            menu_settings_list_current_add_range(list, list_info, (*list)[list_info->index - 1].offset_by, MAXIMUM_MAX_SWAPCHAIN_IMAGES, 1, true, true);
             SETTINGS_DATA_LIST_CURRENT_ADD_FLAGS(list, list_info, SD_FLAG_CMD_APPLY_AUTO);
             MENU_SETTINGS_LIST_CURRENT_ADD_CMD(list, list_info, CMD_EVENT_REINIT);
 
@@ -14089,7 +14163,7 @@ static bool setting_append_list(
                   general_write_handler,
                   general_read_handler);
             (*list)[list_info->index - 1].action_ok = &setting_action_ok_uint;
-            menu_settings_list_current_add_range(list, list_info, 0, 3, 1, true, true);
+            menu_settings_list_current_add_range(list, list_info, MINIMUM_HARD_SYNC_FRAMES, MAXIMUM_HARD_SYNC_FRAMES, 1, true, true);
 
             if (video_driver_test_all_flags(GFX_CTX_FLAGS_ADAPTIVE_VSYNC))
             {
@@ -15267,6 +15341,38 @@ static bool setting_append_list(
 
             CONFIG_BOOL(
                   list, list_info,
+                  &settings->bools.menu_disable_left_analog,
+                  MENU_ENUM_LABEL_INPUT_DISABLE_LEFT_ANALOG_IN_MENU,
+                  MENU_ENUM_LABEL_VALUE_INPUT_DISABLE_LEFT_ANALOG_IN_MENU,
+                  false,
+                  MENU_ENUM_LABEL_VALUE_OFF,
+                  MENU_ENUM_LABEL_VALUE_ON,
+                  &group_info,
+                  &subgroup_info,
+                  parent_group,
+                  general_write_handler,
+                  general_read_handler,
+                  SD_FLAG_ADVANCED
+                  );
+
+            CONFIG_BOOL(
+                  list, list_info,
+                  &settings->bools.menu_disable_right_analog,
+                  MENU_ENUM_LABEL_INPUT_DISABLE_RIGHT_ANALOG_IN_MENU,
+                  MENU_ENUM_LABEL_VALUE_INPUT_DISABLE_RIGHT_ANALOG_IN_MENU,
+                  false,
+                  MENU_ENUM_LABEL_VALUE_OFF,
+                  MENU_ENUM_LABEL_VALUE_ON,
+                  &group_info,
+                  &subgroup_info,
+                  parent_group,
+                  general_write_handler,
+                  general_read_handler,
+                  SD_FLAG_ADVANCED
+                  );
+
+            CONFIG_BOOL(
+                  list, list_info,
                   &settings->bools.quit_press_twice,
                   MENU_ENUM_LABEL_QUIT_PRESS_TWICE,
                   MENU_ENUM_LABEL_VALUE_QUIT_PRESS_TWICE,
@@ -15673,6 +15779,22 @@ static bool setting_append_list(
 
             CONFIG_BOOL(
                   list, list_info,
+                  &settings->bools.input_remap_sort_by_controller_enable,
+                  MENU_ENUM_LABEL_INPUT_REMAP_SORT_BY_CONTROLLER_ENABLE,
+                  MENU_ENUM_LABEL_VALUE_INPUT_REMAP_SORT_BY_CONTROLLER_ENABLE,
+                  false,
+                  MENU_ENUM_LABEL_VALUE_OFF,
+                  MENU_ENUM_LABEL_VALUE_ON,
+                  &group_info,
+                  &subgroup_info,
+                  parent_group,
+                  general_write_handler,
+                  general_read_handler,
+                  SD_FLAG_ADVANCED
+                  );
+
+            CONFIG_BOOL(
+                  list, list_info,
                   &settings->bools.input_autodetect_enable,
                   MENU_ENUM_LABEL_INPUT_AUTODETECT_ENABLE,
                   MENU_ENUM_LABEL_VALUE_INPUT_AUTODETECT_ENABLE,
@@ -15976,8 +16098,8 @@ static bool setting_append_list(
                   msg_hash_to_str(MENU_ENUM_LABEL_VALUE_INPUT_USER_BINDS);
                for (user = 0; user < MAX_USERS; user++)
                {
-                  static char binds_list[MAX_USERS][255];
-                  static char binds_label[MAX_USERS][255];
+                  static char binds_list[MAX_USERS][NAME_MAX_LENGTH];
+                  static char binds_label[MAX_USERS][NAME_MAX_LENGTH];
                   unsigned user_value = user + 1;
                   size_t _len = snprintf(binds_list[user],  sizeof(binds_list[user]), "%d", user_value);
                   strlcpy(binds_list[user] + _len, "_input_binds_list", sizeof(binds_list[user]) - _len);
@@ -16436,58 +16558,42 @@ static bool setting_append_list(
          menu_settings_list_current_add_range(list, list_info, 1, 10, 0.1, true, true);
 
 #ifdef HAVE_RUNAHEAD
-         CONFIG_BOOL(
+         CONFIG_UINT(
                list, list_info,
-               &settings->bools.run_ahead_enabled,
-               MENU_ENUM_LABEL_RUN_AHEAD_ENABLED,
-               MENU_ENUM_LABEL_VALUE_RUN_AHEAD_ENABLED,
-               false,
-               MENU_ENUM_LABEL_VALUE_OFF,
-               MENU_ENUM_LABEL_VALUE_ON,
+               &menu_state_get_ptr()->runahead_mode,
+               MENU_ENUM_LABEL_RUNAHEAD_MODE,
+               MENU_ENUM_LABEL_VALUE_RUNAHEAD_MODE,
+               MENU_RUNAHEAD_MODE_OFF,
                &group_info,
                &subgroup_info,
                parent_group,
                general_write_handler,
-               general_read_handler,
-               SD_FLAG_NONE
-               );
-         (*list)[list_info->index - 1].change_handler = runahead_change_handler;
+               general_read_handler);
+         (*list)[list_info->index - 1].ui_type   = ST_UI_TYPE_UINT_COMBOBOX;
+         (*list)[list_info->index - 1].action_ok = &setting_action_ok_uint;
+         (*list)[list_info->index - 1].get_string_representation =
+               &setting_get_string_representation_runahead_mode;
+         (*list)[list_info->index - 1].change_handler =
+               runahead_change_handler;
+         menu_settings_list_current_add_range(list, list_info,
+               MENU_RUNAHEAD_MODE_OFF, MENU_RUNAHEAD_MODE_LAST - 1, 1, true, true);
 
          CONFIG_UINT(
-            list, list_info,
-            &settings->uints.run_ahead_frames,
-            MENU_ENUM_LABEL_RUN_AHEAD_FRAMES,
-            MENU_ENUM_LABEL_VALUE_RUN_AHEAD_FRAMES,
-            1,
-            &group_info,
-            &subgroup_info,
-            parent_group,
-            general_write_handler,
-            general_read_handler);
+               list, list_info,
+               &settings->uints.run_ahead_frames,
+               MENU_ENUM_LABEL_RUN_AHEAD_FRAMES,
+               MENU_ENUM_LABEL_VALUE_RUN_AHEAD_FRAMES,
+               1,
+               &group_info,
+               &subgroup_info,
+               parent_group,
+               general_write_handler,
+               general_read_handler);
          (*list)[list_info->index - 1].ui_type   = ST_UI_TYPE_UINT_COMBOBOX;
          (*list)[list_info->index - 1].action_ok = &setting_action_ok_uint;
          (*list)[list_info->index - 1].offset_by = 1;
          (*list)[list_info->index - 1].change_handler = runahead_change_handler;
          menu_settings_list_current_add_range(list, list_info, 1, MAX_RUNAHEAD_FRAMES, 1, true, true);
-
-#if defined(HAVE_DYNAMIC) || defined(HAVE_DYLIB)
-         CONFIG_BOOL(
-               list, list_info,
-               &settings->bools.run_ahead_secondary_instance,
-               MENU_ENUM_LABEL_RUN_AHEAD_SECONDARY_INSTANCE,
-               MENU_ENUM_LABEL_VALUE_RUN_AHEAD_SECONDARY_INSTANCE,
-               DEFAULT_RUN_AHEAD_SECONDARY_INSTANCE,
-               MENU_ENUM_LABEL_VALUE_OFF,
-               MENU_ENUM_LABEL_VALUE_ON,
-               &group_info,
-               &subgroup_info,
-               parent_group,
-               general_write_handler,
-               general_read_handler,
-               SD_FLAG_NONE
-               );
-         (*list)[list_info->index - 1].change_handler = runahead_change_handler;
-#endif
 
          CONFIG_BOOL(
                list, list_info,
@@ -16505,22 +16611,6 @@ static bool setting_append_list(
                SD_FLAG_ADVANCED
                );
 
-         CONFIG_BOOL(
-               list, list_info,
-               &settings->bools.preemptive_frames_enable,
-               MENU_ENUM_LABEL_PREEMPT_ENABLE,
-               MENU_ENUM_LABEL_VALUE_PREEMPT_ENABLE,
-               false,
-               MENU_ENUM_LABEL_VALUE_OFF,
-               MENU_ENUM_LABEL_VALUE_ON,
-               &group_info,
-               &subgroup_info,
-               parent_group,
-               general_write_handler,
-               general_read_handler,
-               SD_FLAG_NONE);
-         (*list)[list_info->index - 1].change_handler = preempt_change_handler;
-
          CONFIG_UINT(
                list, list_info,
                &settings->uints.run_ahead_frames,
@@ -16535,24 +16625,8 @@ static bool setting_append_list(
          (*list)[list_info->index - 1].ui_type   = ST_UI_TYPE_UINT_COMBOBOX;
          (*list)[list_info->index - 1].action_ok = &setting_action_ok_uint;
          (*list)[list_info->index - 1].offset_by = 1;
-         (*list)[list_info->index - 1].change_handler = preempt_change_handler;
+         (*list)[list_info->index - 1].change_handler = runahead_change_handler;
          menu_settings_list_current_add_range(list, list_info, 1, MAX_RUNAHEAD_FRAMES, 1, true, true);
-
-         CONFIG_BOOL(
-               list, list_info,
-               &settings->bools.preemptive_frames_hide_warnings,
-               MENU_ENUM_LABEL_PREEMPT_HIDE_WARNINGS,
-               MENU_ENUM_LABEL_VALUE_PREEMPT_HIDE_WARNINGS,
-               DEFAULT_PREEMPT_HIDE_WARNINGS,
-               MENU_ENUM_LABEL_VALUE_OFF,
-               MENU_ENUM_LABEL_VALUE_ON,
-               &group_info,
-               &subgroup_info,
-               parent_group,
-               general_write_handler,
-               general_read_handler,
-               SD_FLAG_ADVANCED
-               );
 #endif
 
 #ifdef ANDROID
@@ -21723,7 +21797,7 @@ static bool setting_append_list(
 
          START_SUB_GROUP(list, list_info, "Playlist", &group_info, &subgroup_info, parent_group);
 
-         /* Favourites size is traditionally associtated with
+         /* Favourites size is traditionally associated with
           * history size, but they are in fact unrelated. We
           * therefore place this entry outside the "History"
           * sub group. */
@@ -23133,7 +23207,7 @@ static bool setting_append_list(
                   msg_hash_to_str(MENU_ENUM_LABEL_VALUE_NETWORK_USER_REMOTE_ENABLE);
                for (user = 0; user < max_users; user++)
                {
-                  char s1[64], s2[64];
+                  char s1[32], s2[64];
                   size_t _len = strlcpy(s1, lbl_network_remote_enable, sizeof(s1));
                   snprintf(s1 + _len, sizeof(s1) - _len, "_user_p%d", user + 1);
                   snprintf(s2, sizeof(s2), val_network_remote_enable, user + 1);

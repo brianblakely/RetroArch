@@ -2490,16 +2490,8 @@ MSG_HASH(
    "Цілочисельне масштабування"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_VIDEO_SCALE_INTEGER,
-   "Масштабувати відео лише за цілочисельними значеннями. Базовий розмір залежить від системних геометрії та співвідношення сторін. Якщо не встановлено «Примусове співвідношення сторін», X/Y будуть мати незалежні значення."
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_VIDEO_SCALE_INTEGER_OVERSCALE,
-   "Масштаб Цілочисельной Шкали"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_VIDEO_SCALE_INTEGER_OVERSCALE,
-   "Примусово масштабувати ціле число для округлення до наступного більшого цілого числа замість округлення вниз."
+   MENU_ENUM_LABEL_VALUE_VIDEO_SCALE_INTEGER_SCALING_SMART,
+   "Розумний"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_ASPECT_RATIO_INDEX,
@@ -3170,6 +3162,14 @@ MSG_HASH(
    "Завантажити перевизначення прив'язок вводу для поточного ядра."
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_INPUT_REMAP_SORT_BY_CONTROLLER_ENABLE,
+   "Sort Remaps By Gamepad"
+   )   
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_INPUT_REMAP_SORT_BY_CONTROLLER_ENABLE,
+   "Remaps will only apply to the active gamepad in which they were saved."
+   )   
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_INPUT_AUTODETECT_ENABLE,
    "Автоналаштування"
    )
@@ -3272,6 +3272,14 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_INPUT_BIND_HOLD,
    "Кількість секунд, необхідне для прив'язки натиснутої кнопки."
+   )
+MSG_HASH(
+   MSG_INPUT_BIND_TIMEOUT,
+   "Час очікування"
+   )
+MSG_HASH(
+   MSG_INPUT_BIND_HOLD,
+   "Утримуйте"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_INPUT_TURBO_PERIOD,
@@ -3603,6 +3611,10 @@ MSG_HASH(
    )
 
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_INPUT_META_SHADER_TOGGLE,
+   "Шейдери (Перемикання)"
+   )
+MSG_HASH(
    MENU_ENUM_LABEL_VALUE_INPUT_META_SHADER_NEXT,
    "Наступний шейдер"
    )
@@ -3846,6 +3858,8 @@ MSG_HASH(
 
 /* Settings > Latency */
 
+#if !(defined(HAVE_DYNAMIC) || defined(HAVE_DYLIB))
+#endif
 
 /* Settings > Core */
 

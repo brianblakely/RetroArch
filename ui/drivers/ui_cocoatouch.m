@@ -51,6 +51,11 @@
 #import <GameController/GCMouse.h>
 #endif
 
+#ifdef HAVE_SDL2
+#define SDL_MAIN_HANDLED
+#include "SDL.h"
+#endif
+
 #if defined(HAVE_COCOA_METAL) || defined(HAVE_COCOATOUCH)
 #import "JITSupport.h"
 id<ApplePlatform> apple_platform;
@@ -149,8 +154,6 @@ static void rarch_draw_observer(CFRunLoopObserverRef observer,
    uint32_t runloop_flags;
    int          ret   = runloop_iterate();
 
-   task_queue_check();
-
    if (ret == -1)
    {
       ui_companion_cocoatouch_event_command(
@@ -202,6 +205,11 @@ void get_ios_version(int *major, int *minor)
       });
    if (major) *major = savedMajor;
    if (minor) *minor = savedMinor;
+}
+
+bool ios_running_on_ipad(void)
+{
+   return (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad);
 }
 
 /* Input helpers: This is kept here because it needs ObjC */
@@ -557,6 +565,9 @@ enum
 #ifdef HAVE_COCOA_METAL
        case APPLE_VIEW_TYPE_VULKAN:
          _renderView = [MetalLayerView new];
+#if TARGET_OS_IOS
+         _renderView.multipleTouchEnabled = YES;
+#endif
          break;
        case APPLE_VIEW_TYPE_METAL:
          {
@@ -661,6 +672,38 @@ enum
    int argc           = 1;
    apple_platform     = self;
 
+   if ([NSUserDefaults.standardUserDefaults boolForKey:@"restore_default_config"])
+   {
+      [NSUserDefaults.standardUserDefaults setBool:NO forKey:@"restore_default_config"];
+      [NSUserDefaults.standardUserDefaults setObject:@"" forKey:@FILE_PATH_MAIN_CONFIG];
+
+      // Get the Caches directory path
+      NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+      NSString *cachesDirectory = [paths firstObject];
+
+      // Define the original and new file paths
+      NSString *originalPath = [cachesDirectory stringByAppendingPathComponent:@"RetroArch/config/retroarch.cfg"];
+      NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+      [dateFormatter setDateFormat:@"HHmm-yyMMdd"];
+      NSString *timestamp = [dateFormatter stringFromDate:[NSDate date]];
+      NSString *newPath = [cachesDirectory stringByAppendingPathComponent:[NSString stringWithFormat:@"RetroArch/config/RetroArch-%@.cfg", timestamp]];
+
+      // File manager instance
+      NSFileManager *fileManager = [NSFileManager defaultManager];
+
+      // Check if the file exists and rename it
+      if ([fileManager fileExistsAtPath:originalPath]) {
+          NSError *error = nil;
+          if ([fileManager moveItemAtPath:originalPath toPath:newPath error:&error]) {
+              NSLog(@"File renamed to %@", newPath);
+          } else {
+              NSLog(@"Error renaming file: %@", error.localizedDescription);
+          }
+      } else {
+          NSLog(@"File does not exist at path %@", originalPath);
+      }
+   }
+
    [self setDelegate:self];
 
    /* Setup window */
@@ -671,8 +714,6 @@ enum
 
    [self refreshSystemConfig];
    [self showGameView];
-
-   jb_start_altkit();
 
    rarch_main(argc, argv, NULL);
 
@@ -712,7 +753,8 @@ enum
 #endif
 
 #if TARGET_OS_IOS
-   [MXMetricManager.sharedManager addSubscriber:self];
+   if (@available(iOS 13.0, *))
+      [MXMetricManager.sharedManager addSubscriber:self];
 #endif
 
 #ifdef HAVE_MFI
@@ -747,6 +789,7 @@ enum
    update_topshelf();
 #endif
    rarch_stop_draw_observer();
+   command_event(CMD_EVENT_SAVE_FILES, NULL);
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -889,7 +932,7 @@ enum
 - (void)supportOtherAudioSessions { }
 
 #if TARGET_OS_IOS
-- (void)didReceiveMetricPayloads:(NSArray<MXMetricPayload *> *)payloads
+- (void)didReceiveMetricPayloads:(NSArray<MXMetricPayload *> *)payloads API_AVAILABLE(ios(13.0))
 {
     for (MXMetricPayload *payload in payloads)
     {
@@ -963,6 +1006,9 @@ int main(int argc, char *argv[])
         RARCH_LOG("Ptrace hack complete, JIT support is enabled.\n");
     else
         RARCH_WARN("Ptrace hack NOT available; Please use an app like Jitterbug.\n");
+#endif
+#ifdef HAVE_SDL2
+    SDL_SetMainReady();
 #endif
    @autoreleasepool {
       return UIApplicationMain(argc, argv, NSStringFromClass([RApplication class]), NSStringFromClass([RetroArch_iOS class]));

@@ -405,6 +405,8 @@ typedef struct video_frame_info
    unsigned crt_switch_resolution_super;
    unsigned width;
    unsigned height;
+   unsigned scale_width;
+   unsigned scale_height;
    unsigned xmb_theme;
    unsigned xmb_color_theme;
    unsigned menu_shader_pipeline;
@@ -455,6 +457,8 @@ typedef struct video_frame_info
 
    uint32_t video_st_flags;
    uint16_t menu_st_flags;
+
+   uint16_t frame_time_target;
 
    char stat_text[1024];
 
@@ -574,7 +578,7 @@ typedef struct gfx_ctx_driver
    gfx_ctx_proc_t (*get_proc_address)(const char*);
 
    /* Returns true if this context supports EGLImage buffers for
-    * screen drawing and was initalized correctly. */
+    * screen drawing and was initialized correctly. */
    bool (*image_buffer_init)(void*, const video_info_t*);
 
    /* Writes the frame to the EGLImage and sets image_handle to it.
@@ -835,6 +839,8 @@ typedef struct
    unsigned frame_cache_height;
    unsigned width;
    unsigned height;
+   unsigned scale_width;
+   unsigned scale_height;
 
    float core_hz;
    float aspect_ratio;
@@ -1041,14 +1047,6 @@ void video_viewport_get_scaled_aspect2(struct video_viewport *vp,
  * Sets monitor refresh rate to new value.
  **/
 void video_monitor_set_refresh_rate(float hz);
-
-/**
- * video_monitor_compute_fps_statistics:
- *
- * Computes monitor FPS statistics.
- **/
-void video_monitor_compute_fps_statistics(uint64_t
-      frame_time_count);
 
 /**
  * video_monitor_fps_statistics

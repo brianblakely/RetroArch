@@ -2474,12 +2474,16 @@ MSG_HASH(
    "Skala całkowita"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_VIDEO_SCALE_INTEGER,
-   "Skaluj wideo tylko w krokach całkowitych. Rozmiar podstawowy zależy od geometrii i proporcji zgłoszonej przez system. Jeśli 'Wymuś współczynnik aspektów' nie jest ustawiony, X/Y będzie liczbą całkowitą skalowaną niezależnie."
+   MENU_ENUM_LABEL_VALUE_VIDEO_SCALE_INTEGER_AXIS,
+   "Oś skali całkowitej"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_VIDEO_SCALE_INTEGER_OVERSCALE,
-   "Wymusza zaokrąglenie skalowania obrazu do następnej większej liczby całkowitej, zamiast zaokrąglać obraz w dół."
+   MENU_ENUM_SUBLABEL_VIDEO_SCALE_INTEGER_AXIS,
+   "Skaluj tylko wysokość lub zarówno wysokość, jak i szerokość. Połowa kroków dotyczy źródeł o wysokiej rozdzielczości."
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_SCALE_INTEGER_SCALING_SMART,
+   "Inteligentny"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_VIDEO_ASPECT_RATIO_INDEX,
@@ -3109,6 +3113,14 @@ MSG_HASH(
    MENU_ENUM_SUBLABEL_INPUT_REMAP_BINDS_ENABLE,
    "Zastąp powiązania wejściowe z zapisanymi powiązaniami ustawionymi dla bieżącego rdzenia."
    )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_INPUT_REMAP_SORT_BY_CONTROLLER_ENABLE,
+   "Sort Remaps By Gamepad"
+   )   
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_INPUT_REMAP_SORT_BY_CONTROLLER_ENABLE,
+   "Remaps will only apply to the active gamepad in which they were saved."
+   )   
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_INPUT_AUTODETECT_ENABLE,
    "Konfiguracja automatyczna"
@@ -3788,10 +3800,6 @@ MSG_HASH(
    "Wysyła wiadomość czatu dla bieżącej sesji sieciowej."
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_INPUT_META_NETPLAY_FADE_CHAT_TOGGLE,
-   "Przełącznik znikania czatu Netplay"
-   )
-MSG_HASH(
    MENU_ENUM_SUBLABEL_INPUT_META_NETPLAY_FADE_CHAT_TOGGLE,
    "Przełącz pomiędzy zanikającymi i statycznymi wiadomościami czatu sieciowego."
    )
@@ -4007,25 +4015,11 @@ MSG_HASH(
 /* Settings > Latency */
 
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_RUN_AHEAD_ENABLED,
-   "Uruchomienie z wyprzedzeniem aby zmniejszyć opóźnienia"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_RUN_AHEAD_ENABLED,
-   "Uruchom logikę rdzenia o jedną lub więcej klatek z wyprzedzeniem, a następnie załaduj stan z powrotem, aby zmniejszyć postrzegane opóźnienie wejścia."
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_RUN_AHEAD_FRAMES,
    "Liczba klatek uruchomienia z wyprzedzeniem"
    )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_RUN_AHEAD_SECONDARY_INSTANCE,
-   "Użyj drugiej instancji dla uruchomienia z wyprzedzeniem"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_RUN_AHEAD_SECONDARY_INSTANCE,
-   "Użyj drugiej instancji rdzenia RetroArch do uruchomienia z wyprzedzeniem. Zapobiega problemom dźwiękowym z powodu ładowania stanu."
-   )
+#if !(defined(HAVE_DYNAMIC) || defined(HAVE_DYLIB))
+#endif
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_RUN_AHEAD_HIDE_WARNINGS,
    "Ukryj ostrzeżenia uruchomienia z wyprzedzeniem"
@@ -12178,10 +12172,6 @@ MSG_HASH(
    "Nie można określić nowej ścieżki konfiguracji. Użyj bieżącego czasu."
    )
 MSG_HASH(
-   MSG_CHEEVOS_HARDCORE_MODE_ENABLE,
-   "Osiągnięcia Tryb Hardcore Włączono, zapisywanie stanu i przewijanie wyłączone."
-   )
-MSG_HASH(
    MSG_COMPARING_WITH_KNOWN_MAGIC_NUMBERS,
    "Porównując ze znanymi magicznymi liczbami..."
    )
@@ -13226,6 +13216,10 @@ MSG_HASH(
    "Ukończono %s"
    )
 MSG_HASH(
+   MSG_CHEEVOS_HARDCORE_MODE_ENABLE,
+   "Osiągnięcia Tryb Hardcore Włączono, zapisywanie stanu i przewijanie wyłączone."
+   )
+MSG_HASH(
    MSG_RESAMPLER_QUALITY_LOWEST,
    "Najniższa"
    )
@@ -13969,6 +13963,10 @@ MSG_HASH(
 MSG_HASH(
    MSG_IOS_TOUCH_MOUSE_DISABLED,
    "Mysz dotykowa jest wyłączona"
+   )
+MSG_HASH(
+   MSG_SDL2_MIC_NEEDS_SDL2_AUDIO,
+   "mikrofon sdl2 wymaga sterownika audio sdl2"
    )
 MSG_HASH(
    MSG_AI_SERVICE_STOPPED,

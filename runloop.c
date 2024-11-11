@@ -706,6 +706,8 @@ void runloop_runtime_log_deinit(
          sizeof(runloop_st->runtime_content_path));
    memset(runloop_st->runtime_core_path, 0,
          sizeof(runloop_st->runtime_core_path));
+   memset(runloop_st->runtime_patch_path, 0,
+         sizeof(runloop_st->runtime_patch_path));
 }
 
 static bool runloop_clear_all_thread_waits(
@@ -4369,6 +4371,7 @@ static void runloop_runtime_log_init(runloop_state_t *runloop_st)
 {
    const char *content_path            = path_get(RARCH_PATH_CONTENT);
    const char *core_path               = path_get(RARCH_PATH_CORE);
+   const char *patch_path              = path_get(RARCH_PATH_PATCH);
 
    runloop_st->core_runtime_last       = cpu_features_get_time_usec();
    runloop_st->core_runtime_usec       = 0;
@@ -4388,6 +4391,8 @@ static void runloop_runtime_log_init(runloop_state_t *runloop_st)
          0, sizeof(runloop_st->runtime_content_path));
    memset(runloop_st->runtime_core_path,
          0, sizeof(runloop_st->runtime_core_path));
+   memset(runloop_st->runtime_patch_path,
+         0, sizeof(runloop_st->runtime_patch_path));
 
    if (!string_is_empty(content_path))
       strlcpy(runloop_st->runtime_content_path,
@@ -4398,6 +4403,11 @@ static void runloop_runtime_log_init(runloop_state_t *runloop_st)
       strlcpy(runloop_st->runtime_core_path,
             core_path,
             sizeof(runloop_st->runtime_core_path));
+
+   if (!string_is_empty(patch_path))
+      strlcpy(runloop_st->runtime_patch_path,
+            patch_path,
+            sizeof(runloop_st->runtime_patch_path));
 }
 
 void runloop_set_frame_limit(
@@ -4888,9 +4898,17 @@ void runloop_path_fill_names(void)
 
    if (string_is_empty(runloop_st->name.ups))
    {
-      size_t len = strlcpy(runloop_st->name.ups,
+      size_t len;
+      if(!string_is_empty(runloop_st->runtime_patch_path)) {
+         len = strlcpy(runloop_st->name.ups,
+            runloop_st->runtime_patch_path,
+            sizeof(runloop_st->name.ups));
+      } else {
+         len = strlcpy(runloop_st->name.ups,
             runloop_st->runtime_content_path_basename,
             sizeof(runloop_st->name.ups));
+      }
+
       strlcpy(runloop_st->name.ups       + len,
             ".ups",
             sizeof(runloop_st->name.ups) - len);
@@ -4898,9 +4916,17 @@ void runloop_path_fill_names(void)
 
    if (string_is_empty(runloop_st->name.bps))
    {
-      size_t len = strlcpy(runloop_st->name.bps,
+      size_t len;
+      if(!string_is_empty(runloop_st->runtime_patch_path)) {
+         len = strlcpy(runloop_st->name.bps,
+            runloop_st->runtime_patch_path,
+            sizeof(runloop_st->name.bps));
+      } else {
+         len = strlcpy(runloop_st->name.bps,
             runloop_st->runtime_content_path_basename,
             sizeof(runloop_st->name.bps));
+      }
+
       strlcpy(runloop_st->name.bps       + len,
             ".bps",
             sizeof(runloop_st->name.bps) - len);
@@ -4908,9 +4934,17 @@ void runloop_path_fill_names(void)
 
    if (string_is_empty(runloop_st->name.ips))
    {
-      size_t len = strlcpy(runloop_st->name.ips,
+      size_t len;
+      if(!string_is_empty(runloop_st->runtime_patch_path)) {
+         len = strlcpy(runloop_st->name.ips,
+            runloop_st->runtime_patch_path,
+            sizeof(runloop_st->name.ips));
+      } else {
+         len = strlcpy(runloop_st->name.ips,
             runloop_st->runtime_content_path_basename,
             sizeof(runloop_st->name.ips));
+      }
+
       strlcpy(runloop_st->name.ips       + len,
             ".ips",
             sizeof(runloop_st->name.ips) - len);

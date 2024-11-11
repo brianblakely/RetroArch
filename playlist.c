@@ -602,6 +602,8 @@ static void playlist_free_entry(struct playlist_entry *entry)
       free(entry->runtime_str);
    if (entry->last_played_str)
       free(entry->last_played_str);
+   if (entry->patch)
+      free(entry->patch);
    if (entry->subsystem_roms)
       string_list_free(entry->subsystem_roms);
    if (entry->path_id)
@@ -609,6 +611,7 @@ static void playlist_free_entry(struct playlist_entry *entry)
 
    entry->path               = NULL;
    entry->label              = NULL;
+   entry->patch              = NULL;
    entry->core_path          = NULL;
    entry->core_name          = NULL;
    entry->db_name            = NULL;

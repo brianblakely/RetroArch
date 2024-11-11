@@ -116,7 +116,9 @@ GENERIC_DEFERRED_PUSH(deferred_push_eject_disc,                     DISPLAYLIST_
 #endif
 GENERIC_DEFERRED_PUSH(deferred_push_cdrom_info_detail_list,         DISPLAYLIST_CDROM_DETAIL_INFO)
 GENERIC_DEFERRED_PUSH(deferred_push_load_disk_list,                 DISPLAYLIST_LOAD_DISC)
+#ifdef HAVE_PATCH
 GENERIC_DEFERRED_PUSH(deferred_push_patch_list,                     DISPLAYLIST_PATCH_LIST)
+#endif
 GENERIC_DEFERRED_PUSH(deferred_push_information_list,               DISPLAYLIST_INFORMATION_LIST)
 GENERIC_DEFERRED_PUSH(deferred_push_information,                    DISPLAYLIST_INFORMATION)
 GENERIC_DEFERRED_PUSH(deferred_archive_action_detect_core,          DISPLAYLIST_ARCHIVE_ACTION_DETECT_CORE)

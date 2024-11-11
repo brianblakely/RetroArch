@@ -978,6 +978,7 @@ DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_netplay_refresh_lan,                
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_rename_entry,                          MENU_ENUM_SUBLABEL_RENAME_ENTRY)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_delete_entry,                          MENU_ENUM_SUBLABEL_DELETE_ENTRY)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_set_patch,                             MENU_ENUM_SUBLABEL_SET_PATCH)
+DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_no_patch,                              MENU_ENUM_SUBLABEL_NO_PATCH)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_information,                           MENU_ENUM_SUBLABEL_INFORMATION)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_run,                                   MENU_ENUM_SUBLABEL_RUN)
 DEFAULT_SUBLABEL_MACRO(action_bind_sublabel_add_to_favorites,                      MENU_ENUM_SUBLABEL_ADD_TO_FAVORITES)
@@ -3531,6 +3532,9 @@ int menu_cbs_init_bind_sublabel(menu_file_list_cbs_t *cbs,
             break;
          case MENU_ENUM_LABEL_SET_PATCH:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_set_patch);
+            break;
+         case MENU_ENUM_LABEL_NO_PATCH:
+            BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_no_patch);
             break;
          case MENU_ENUM_LABEL_INFORMATION:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_information);

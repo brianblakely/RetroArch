@@ -2668,11 +2668,11 @@ MSG_HASH(
    "Viewport Anchor Bias Y"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_VIDEO_VIEWPORT_BIAS_X, 
+   MENU_ENUM_SUBLABEL_VIDEO_VIEWPORT_BIAS_X,
    "Custom viewport bias used to offset the viewport horizontally (if wider than content height).  0.0 means far left and 1.0 means far right."
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_VIDEO_VIEWPORT_BIAS_Y, 
+   MENU_ENUM_SUBLABEL_VIDEO_VIEWPORT_BIAS_Y,
    "Custom viewport bias used to offset the viewport vertically (if taller than content height).  0.0 means top and 1.0 means bottom."
    )
 #if defined(RARCH_MOBILE)
@@ -2693,11 +2693,11 @@ MSG_HASH(
    "Viewport Anchor Bias Y (Portrait Orientation)"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_VIDEO_VIEWPORT_BIAS_PORTRAIT_X, 
+   MENU_ENUM_SUBLABEL_VIDEO_VIEWPORT_BIAS_PORTRAIT_X,
    "Custom viewport bias used to offset the viewport horizontally (if wider than content height).  0.0 means far left and 1.0 means far right. (Portrait Orientation)"
    )
 MSG_HASH(
-   MENU_ENUM_SUBLABEL_VIDEO_VIEWPORT_BIAS_PORTRAIT_Y, 
+   MENU_ENUM_SUBLABEL_VIDEO_VIEWPORT_BIAS_PORTRAIT_Y,
    "Custom viewport bias used to offset the viewport vertically (if taller than content height).  0.0 means top and 1.0 means bottom. (Portrait Orientation)"
    )
 #endif
@@ -3372,11 +3372,11 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_INPUT_REMAP_SORT_BY_CONTROLLER_ENABLE,
    "Sort Remaps By Gamepad"
-   )   
+   )
 MSG_HASH(
    MENU_ENUM_SUBLABEL_INPUT_REMAP_SORT_BY_CONTROLLER_ENABLE,
    "Remaps will only apply to the active gamepad in which they were saved."
-   )   
+   )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_INPUT_AUTODETECT_ENABLE,
    "Autoconfig"
@@ -9042,6 +9042,14 @@ MSG_HASH(
    MENU_ENUM_SUBLABEL_SET_PATCH,
    "Choose which patch to apply to this content."
 )
+MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_NO_PATCH,
+   "No Patch"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_NO_PATCH,
+   "Do not apply a patch to this content."
+   )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_INFORMATION,
    "Information"

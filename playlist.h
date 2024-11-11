@@ -124,6 +124,7 @@ struct playlist_entry
    char *subsystem_name;
    char *runtime_str;
    char *last_played_str;
+   char *patch;
    struct string_list *subsystem_roms;
    playlist_path_id_t *path_id;
    unsigned entry_slot;

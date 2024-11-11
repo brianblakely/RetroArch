@@ -4946,16 +4946,17 @@ static unsigned menu_displaylist_parse_pl_thumbnail_download_list(
 static void menu_displaylist_patch_list(
       menu_handle_t *menu, file_list_t *info_list)
 {
-   char tmp[8192];
+   char find_dir[8192]; /* Find patches directory */
+   char find_dir_wh[8192]; /* Find patches directory (with whitespace) */
    playlist_t *playlist                = playlist_get_cached();
    unsigned idx                        = menu->rpl_entry_selection_ptr;
    const struct playlist_entry *entry  = NULL;
 
    playlist_get_index(playlist, idx, &entry);
 
-   const char *patches_dir;
+   char *patches_dir = NULL;
 
-   char *modified_path = entry->path;
+   char *modified_path = strdup(entry->path);
    char *archPtr = NULL;
    archPtr = path_get_archive_delim(modified_path);
 
@@ -4964,33 +4965,54 @@ static void menu_displaylist_patch_list(
    }
 
    modified_path = path_remove_extension(modified_path);
-   modified_path = string_to_lower(modified_path);
-   fill_pathname(tmp, modified_path, "_patches", sizeof(tmp));
 
-   patches_dir = tmp;
+   /* Accept a single space suffix variant */
+   fill_pathname(find_dir, modified_path, "_patches", sizeof(find_dir));
+   fill_pathname(find_dir_wh, modified_path, " _patches", sizeof(find_dir_wh));
 
-   bool pid = path_is_directory(patches_dir);
+   bool pid_cl = path_is_directory(find_dir);
+   bool pid_wh = path_is_directory(find_dir_wh);
+
+   if(pid_cl) {
+      patches_dir = find_dir;
+   } else if(pid_wh) {
+      patches_dir = find_dir_wh;
+   }
 
    menu_entries_append(info_list,
-         "No Patch",
-         "foo",
-         0,
+         msg_hash_to_str(MENU_ENUM_LABEL_VALUE_NO_PATCH),
+         msg_hash_to_str(MENU_ENUM_LABEL_NO_PATCH),
+         MENU_ENUM_LABEL_NO_PATCH,
          FILE_TYPE_NONE, 0, 0, NULL);
-   menu_entries_append(info_list,
-         patches_dir,
-         "bar",
-         0,
-         FILE_TYPE_NONE, 0, 0, NULL);
-   menu_entries_append(info_list,
-         pid ? "true" : "false",
-         "bar",
-         0,
-         FILE_TYPE_NONE, 0, 0, NULL);
-   menu_entries_append(info_list,
-         "Egyptian Reskin",
-         "baz",
-         0,
-         FILE_TYPE_NONE, 0, 0, NULL);
+
+   if(patches_dir != NULL) {
+      struct string_list *file_list = dir_list_new(patches_dir, FILE_PATH_IPS_EXTENSION, false, false, false, false);
+      dir_list_append(file_list, patches_dir, FILE_PATH_BPS_EXTENSION, false, false, false, false);
+      dir_list_append(file_list, patches_dir, FILE_PATH_UPS_EXTENSION, false, false, false, false);
+
+      if (file_list && file_list->size)
+      {
+         unsigned i;
+
+         dir_list_sort(file_list, true);
+
+         for (i = 0; i < file_list->size; i++)
+         {
+            const char *path          = file_list->elems[i].data;
+            const char *patch_file    = NULL;
+
+            patch_file = path_basename_nocompression(path);
+
+            menu_entries_append(info_list,
+                  path_remove_extension(patch_file),
+                  path,
+                  0,
+                  FILE_TYPE_NONE, 0, 0, NULL);
+         }
+      }
+   }
+
+   free(modified_path);
 }
 
 static unsigned menu_displaylist_parse_content_information(

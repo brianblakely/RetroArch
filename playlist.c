@@ -821,6 +821,15 @@ void playlist_update(playlist_t *playlist, size_t idx,
       entry->crc32       = strdup(update_entry->crc32);
       playlist->flags   |= CNT_PLAYLIST_FLG_MOD;
    }
+
+   if (update_entry->patch && (update_entry->patch != entry->patch))
+   {
+      if (entry->patch)
+         free(entry->patch);
+      entry->patch     = strdup(update_entry->patch);
+      playlist->flags   |= CNT_PLAYLIST_FLG_MOD;
+   }
+
 }
 
 void playlist_update_runtime(playlist_t *playlist, size_t idx,

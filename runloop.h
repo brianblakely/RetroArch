@@ -278,6 +278,7 @@ struct runloop
 #endif
    char runtime_content_path[PATH_MAX_LENGTH];
    char runtime_core_path[PATH_MAX_LENGTH];
+   char runtime_patch_path[PATH_MAX_LENGTH];
    char savefile_dir[DIR_MAX_LENGTH];
    char savestate_dir[DIR_MAX_LENGTH];
    char current_library_name[NAME_MAX_LENGTH];

@@ -638,6 +638,7 @@ static void runloop_update_runtime_log(
    runtime_log_t *runtime_log   = runtime_log_init(
          runloop_st->runtime_content_path,
          runloop_st->runtime_core_path,
+         runloop_st->runtime_patch_path,
          dir_runtime_log,
          dir_playlist,
          log_per_core);

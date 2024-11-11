@@ -225,6 +225,7 @@ end:
 runtime_log_t *runtime_log_init(
       const char *content_path,
       const char *core_path,
+      const char *patch_path,
       const char *dir_runtime_log,
       const char *dir_playlist,
       bool log_per_core)
@@ -232,6 +233,7 @@ runtime_log_t *runtime_log_init(
    char log_file_dir[DIR_MAX_LENGTH];
    char content_name[NAME_MAX_LENGTH];
    char core_name[NAME_MAX_LENGTH];
+   char patch_name[NAME_MAX_LENGTH];
    char log_file_path[PATH_MAX_LENGTH];
    char tmp_buf[PATH_MAX_LENGTH];
    bool supports_no_game      = false;
@@ -240,6 +242,7 @@ runtime_log_t *runtime_log_init(
 
    content_name[0]            = '\0';
    core_name[0]               = '\0';
+   patch_name[0]               = '\0';
 
    if (     string_is_empty(dir_runtime_log)
          && string_is_empty(dir_playlist))
@@ -358,6 +361,17 @@ runtime_log_t *runtime_log_init(
          return NULL;
 
       _len = strlcpy(content_name, tmp_buf_no_ext, sizeof(content_name));
+
+      /* Get patch name, append to content */
+#ifdef HAVE_PATCH
+      if (!string_is_empty(patch_path))
+      {
+         strlcpy(patch_name, path_basename(patch_path), sizeof(patch_name));
+         strlcat(content_name, "_", sizeof(content_name));
+         strlcat(content_name, patch_name, sizeof(content_name));
+      }
+#endif
+
       strlcpy(content_name + _len, ".lrtl", sizeof(content_name) - _len);
    }
 
@@ -1219,6 +1233,7 @@ void runtime_update_playlist(
    if ((runtime_log = runtime_log_init(
          entry->path,
          entry->core_path,
+         entry->patch,
          dir_runtime_log,
          dir_playlist,
          log_per_core)))

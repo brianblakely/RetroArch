@@ -70,6 +70,7 @@ typedef struct
 runtime_log_t *runtime_log_init(
       const char *content_path,
       const char *core_path,
+      const char *patch_path,
       const char *dir_runtime_log,
       const char *dir_playlist,
       bool log_per_core);

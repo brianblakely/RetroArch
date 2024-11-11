@@ -1338,6 +1338,7 @@ void runtime_update_contentless_core(
    runtime_log = runtime_log_init(
          NULL,
          core_path,
+         NULL,
          dir_runtime_log,
          dir_playlist,
          log_per_core);

@@ -253,8 +253,9 @@ static void rcheevos_show_mastery_placard(void)
          {
             const char* content_path = path_get(RARCH_PATH_CONTENT);
             const char* core_path = path_get(RARCH_PATH_CORE);
+            const char* patch_path = path_get(RARCH_PATH_PATCH);
             runtime_log_t* runtime_log = runtime_log_init(
-               content_path, core_path,
+               content_path, core_path, patch_path,
                settings->paths.directory_runtime_log,
                settings->paths.directory_playlist,
                !content_runtime_log_aggr);

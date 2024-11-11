@@ -5028,6 +5028,7 @@ static unsigned menu_displaylist_parse_content_information(
    const char *loaded_core_path        = path_get(RARCH_PATH_CORE);
    const char *content_path            = NULL;
    const char *core_path               = NULL;
+   const char *patch_path              = NULL;
    const char *db_name                 = NULL;
    bool playlist_origin                = true;
    bool playlist_valid                 = false;
@@ -5086,6 +5087,7 @@ static unsigned menu_displaylist_parse_content_information(
       {
          content_path  = entry->path;
          core_path     = entry->core_path;
+         core_path     = entry->patch;
          db_name       = entry->db_name;
 
          if (!string_is_empty(entry->label))
@@ -5245,6 +5247,7 @@ static unsigned menu_displaylist_parse_content_information(
       runtime_log_t *runtime_log = runtime_log_init(
             content_path,
             core_path,
+            patch_path,
             settings->paths.directory_runtime_log,
             settings->paths.directory_playlist,
             (settings->uints.playlist_sublabel_runtime_type == PLAYLIST_RUNTIME_PER_CORE));

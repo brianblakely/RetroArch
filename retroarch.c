@@ -2495,6 +2495,8 @@ char *path_get_ptr(enum rarch_path_type type)
          break;
       case RARCH_PATH_CORE:
          return p_rarch->path_libretro;
+      case RARCH_PATH_PATCH:
+         return runloop_st->runtime_patch_path;
       case RARCH_PATH_NONE:
       case RARCH_PATH_NAMES:
          break;
@@ -2536,6 +2538,8 @@ const char *path_get(enum rarch_path_type type)
          break;
       case RARCH_PATH_CORE:
          return p_rarch->path_libretro;
+      case RARCH_PATH_PATCH:
+         return runloop_st->runtime_patch_path;
       case RARCH_PATH_NONE:
       case RARCH_PATH_NAMES:
          break;
@@ -2568,6 +2572,8 @@ size_t path_get_realsize(enum rarch_path_type type)
          return sizeof(p_rarch->path_config_override_file);
       case RARCH_PATH_CORE:
          return sizeof(p_rarch->path_libretro);
+      case RARCH_PATH_PATCH:
+         return sizeof(runloop_state_get_ptr()->runtime_patch_path);
       case RARCH_PATH_NONE:
       case RARCH_PATH_NAMES:
          break;
@@ -2595,6 +2601,10 @@ bool path_set(enum rarch_path_type type, const char *path)
       case RARCH_PATH_CORE:
          strlcpy(p_rarch->path_libretro, path,
                sizeof(p_rarch->path_libretro));
+         break;
+      case RARCH_PATH_PATCH:
+         strlcpy(runloop_st->runtime_patch_path, path,
+               sizeof(runloop_st->runtime_patch_path));
          break;
       case RARCH_PATH_DEFAULT_SHADER_PRESET:
          strlcpy(p_rarch->path_default_shader_preset, path,
@@ -2671,6 +2681,10 @@ bool path_is_empty(enum rarch_path_type type)
          if (string_is_empty(p_rarch->path_libretro))
             return true;
          break;
+      case RARCH_PATH_PATCH:
+         if (string_is_empty(runloop_state_get_ptr()->runtime_patch_path))
+            return true;
+         break;
       case RARCH_PATH_BASENAME:
          if (string_is_empty(runloop_state_get_ptr()->runtime_content_path_basename))
             return true;
@@ -2696,6 +2710,10 @@ void path_clear(enum rarch_path_type type)
    {
       case RARCH_PATH_CORE:
          *p_rarch->path_libretro = '\0';
+         break;
+      case RARCH_PATH_PATCH:
+         runloop_st = runloop_state_get_ptr();
+         *runloop_st->runtime_patch_path = '\0';
          break;
       case RARCH_PATH_CONFIG:
          *p_rarch->path_config_file = '\0';

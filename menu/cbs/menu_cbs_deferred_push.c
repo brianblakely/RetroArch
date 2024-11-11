@@ -855,7 +855,9 @@ static int menu_cbs_init_bind_deferred_push_compare_label(
       {MENU_ENUM_LABEL_NETWORK_INFORMATION, deferred_push_network_information},
       {MENU_ENUM_LABEL_ONLINE_UPDATER, deferred_push_options},
       {MENU_ENUM_LABEL_HELP_LIST, deferred_push_help},
+#ifdef HAVE_PATCH
       {MENU_ENUM_LABEL_SET_PATCH, deferred_push_patch_list},
+#endif
       {MENU_ENUM_LABEL_INFORMATION_LIST, deferred_push_information_list},
       {MENU_ENUM_LABEL_INFORMATION, deferred_push_information},
       {MENU_ENUM_LABEL_SHADER_OPTIONS, deferred_push_shader_options},
@@ -1127,7 +1129,9 @@ static int menu_cbs_init_bind_deferred_push_compare_label(
             BIND_ACTION_DEFERRED_PUSH(cbs, deferred_push_load_content_special);
             break;
          case MENU_ENUM_LABEL_SET_PATCH:
+#ifdef HAVE_PATCH
             BIND_ACTION_DEFERRED_PUSH(cbs, deferred_push_patch_list);
+#endif
             break;
          case MENU_ENUM_LABEL_INFORMATION_LIST:
             BIND_ACTION_DEFERRED_PUSH(cbs, deferred_push_information_list);
